@@ -1,2 +1,17 @@
 <h1>Welcome#index</h1>
-<p>Find me in app/views/welcome/index.html.erb</p>
+<p>
+	<%= form_tag({controller: "welcome", action: "review"}, method: "get") do %>
+	<div>
+		<%= label_tag :email %>
+		<%= text_field_tag :email %>
+	</div>
+	<div>
+		<%= label_tag :bit_shares_account %>
+		<%= text_field_tag :bit_shares_account %>
+	</div>
+	<div>
+		<%= submit_tag("Review") %>
+	</div>
+	
+	<% end %>
+</p>
