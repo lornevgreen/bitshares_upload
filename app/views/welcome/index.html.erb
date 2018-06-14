@@ -1,17 +1,20 @@
-<h1>Welcome#index</h1>
-<p>
-	<%= form_tag({controller: "welcome", action: "review"}, method: "get") do %>
-	<div>
-		<%= label_tag :email %>
-		<%= text_field_tag :email %>
+<h1>Upload to BitShares</h1>
+<div>
+	<%= form_tag({:action => "upload"}, {:multipart => true, :method => :post}) do %>
+	<div class="field">
+		<%= label_tag "email" %>
+		<%= text_field_tag "email" %>
 	</div>
-	<div>
-		<%= label_tag :bit_shares_account %>
-		<%= text_field_tag :bit_shares_account %>
+	<div class="field">
+		<%= label_tag "bit_shares_account" %>
+		<%= text_field_tag "bit_shares_account" %>
+	</div class="field">
+	<div class="field">
+		<%= label_tag "cloud_coin_file" %>
+		<%= file_field_tag 'cloud_coin_file' %>
 	</div>
-	<div>
+	<div class="field">
 		<%= submit_tag("Review") %>
-	</div>
-	
+	</div>	
 	<% end %>
-</p>
+</div>
