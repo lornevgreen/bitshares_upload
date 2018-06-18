@@ -7,28 +7,36 @@ class WelcomeController < ApplicationController
     receipt = params["receipt"]
     # Check Receipt
     uri = URI("https://bitshares.cloudcoin.global/get_receipt.aspx")
-    uri.query = URI.encode_www_form(:rn => receipt)
-    res = Net::HTTP.get_response(uri)
+    res = Net::HTTP.post_form(uri, "rn" => receipt, 
+      "pk" => "E5E56C0D-6792-469E-B7A6-30F9E3F715C9")
+    
     # res.code should be 200
+    
     if (res.is_a?(Net::HTTPSuccess))
+      # if the receipt number and response are correct
       # convert the response into JSON object
       response_json = JSON.parse(res.body)
       # get the status of the receipt
       status = response_json["status"]
-
+      flash[:notice] = response_json.inspect
       if (status == "fail")
         # todo
       else
         # todo
       end
-
-      asdf
+    else
+      redirect_to welcome_index_url, notice: "Something went wrong while checking the receipt. Please try again."
+      return
     end
 
   end
 
   def upload
     uploaded_io = params["cloud_coin_file"]
+    if uploaded_io == nil || uploaded_io == ""
+      redirect_to welcome_index_url, notice: "Stack file is missing. Please try again."
+      return
+    end
     # Generate a file name that will be unique YYYYMMSSuploadedfile.stack
     # Eg. 20180616CloudCoins.stack
     generated_file_name = Time.now.strftime("%Y%m%d%H%M%S") + uploaded_io.original_filename
@@ -54,12 +62,24 @@ class WelcomeController < ApplicationController
       res = http.request(req)
       # res.code should be 200
     end
+
+
     if (res.is_a?(Net::HTTPSuccess))
+      # if cloudcoin deposit one stack service was able to
+      # process the request
       response_json = JSON.parse(res.body)
+      # get the status
+      status = response_json["status"]
+      if (status == "error")
+        # real error message is response_json["message"]
+        redirect_to welcome_index_url, notice: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+        return
+      end
       receipt = response_json["receipt"]
       redirect_to controller: "welcome", action: "review", file_name: generated_file_name, receipt: receipt
     else
-      redirect_to controller: "welcome", action: "index"
+      # if uploaded file is NOT a cloudcoin stack file
+      redirect_to welcome_index_url, notice: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
     end
   end
 end
