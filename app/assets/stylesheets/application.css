@@ -132,8 +132,13 @@ header {
   text-transform: uppercase;
   background: #338fff;
   color: white;
+  font: normal 18px/1.5 "Fira Sans", "Helvetica Neue", sans-serif;
   -webkit-transition: background-color 0.25s, border-color 0.25s, color 0.25s;
   transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+  display: block;
+  text-decoration: none;
+  text-align: center;
+  padding: 1em;
 }
 .btn:hover {
   background: white;
