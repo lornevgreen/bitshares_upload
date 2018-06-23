@@ -1,21 +1,26 @@
-<h1>Upload Your Cloud Coins to BitShares</h1>
-<p id="notice"><%= notice %></p>
-<div>
-	<%= form_tag({:action => "upload"}, {:multipart => true, :method => :post}) do %>
-	<div class="field">
-		<%= label_tag "email" %>
-		<%= text_field_tag "email" %>
-	</div>
-	<div class="field">
-		<%= label_tag "bit_shares_account" %>
-		<%= text_field_tag "bit_shares_account" %>
-	</div class="field">
-	<div class="field">
-		<%= label_tag "cloud_coin_file" %>
-		<%= file_field_tag 'cloud_coin_file' %>
-	</div>
-	<div class="field">
-		<%= submit_tag("Review") %>
-	</div>	
-	<% end %>
-</div>
+<section class="upload-bitshares">
+  <h1>Upload to Bitshares</h1>
+  <div class="steps">
+    <b>Step 1 - Select Files</b> | Step 2 - Review | Step 3 - Upload
+  </div>
+  <p id="notice"><%= notice %></p>
+  <div class="form-container">
+    <%= form_tag({:action => "upload"}, {:multipart => true, :method => :post}) do %>
+    <div class="field">
+      <%= label_tag "email" %>
+      <%= text_field_tag "email" %>
+    </div>
+    <div class="field">
+      <%= label_tag "bit_shares_account" %>
+      <%= text_field_tag "bit_shares_account" %>
+    </div class="field">
+    <div class="field">
+      <%= label_tag "cloud_coin_file" %>
+      <%= file_field_tag 'cloud_coin_file' %>
+    </div>
+    <div class="field">
+      <%= submit_tag("Upload") %>
+    </div>  
+    <% end %>
+  </div>
+</section>
