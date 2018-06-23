@@ -42,8 +42,8 @@ main {
 /*////////////////////////////////*/
 header {
   padding: 1em;
-/*   background: #262626; */
-  background: #338FFF;
+  /*   background: #262626; */
+  background: #338fff;
   color: white;
   font-size: 2em;
   text-transform: uppercase;
@@ -75,7 +75,8 @@ header {
   color: #191919;
 }
 
-.form-container {
+.form-container,
+.table-container {
   padding: 3em 0;
 }
 .form-inner {
@@ -86,10 +87,12 @@ header {
   align-items: center;
 }
 
-.form-inner > .field:not(:last-child) {
+.form-inner > .field:not(:last-child),
+.tfield:not(:last-child) {
   margin-bottom: 1.25em;
 }
-.form-inner > .field label {
+.form-inner > .field label,
+.tfield > .col1 {
   padding: 8px 8px 8px 0;
   font-size: 1.1em;
   font-weight: 300;
@@ -98,11 +101,13 @@ header {
   flex: 1 0 120px;
   max-width: 220px;
 }
-.form-inner > .field label + * {
+.form-inner > .field label + *,
+.tfield > .col1 + * {
   flex: 1 0 220px;
 }
 .form-inner > .field input:not([type="checkbox"]),
-.form-inner > .field textarea {
+.form-inner > .field textarea,
+.tfield > .col2 {
   padding: 15px;
   border: 2px solid #191919;
   outline: none;
@@ -111,27 +116,31 @@ header {
 }
 .form-inner .field input:not([type="checkbox"]):focus,
 .form-inner .field textarea:focus {
-  border: 2px solid #338FFF;
+  border: 2px solid #338fff;
 }
 .form-inner > .field input[type="file"] {
   border: none;
   cursor: pointer;
+}
+.tfield > .col2 {
+  border-style: none;
 }
 .btn {
   width: 100%;
   margin-top: 1em;
   cursor: pointer;
   text-transform: uppercase;
-  background: #338FFF;
+  background: #338fff;
   color: white;
   -webkit-transition: background-color 0.25s, border-color 0.25s, color 0.25s;
-	transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+  transition: background-color 0.25s, border-color 0.25s, color 0.25s;
 }
 .btn:hover {
   background: white;
   color: black;
 }
 
+/*/////////////////////*/
 .alert {
   padding-top: 3em;
   color: red;
