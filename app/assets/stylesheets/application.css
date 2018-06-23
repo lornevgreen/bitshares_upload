@@ -131,3 +131,12 @@ header {
   background: white;
   color: black;
 }
+
+.alert {
+  padding-top: 3em;
+  color: red;
+}
+.notice {
+  padding-top: 3em;
+  color: green;
+}
