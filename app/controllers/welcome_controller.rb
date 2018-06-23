@@ -28,7 +28,7 @@ class WelcomeController < ApplicationController
         @total_fracked = response_json["total_fracked"]
         @total_counterfeit = response_json["total_counterfeit"]
         @total_lost = response_json["total_lost"]
-        @coins = response_json["receipt"]
+        @coins = response_json["receipt"].compact
       end
     else
       redirect_to welcome_index_url, alert: "Something went wrong while checking the receipt. Please try again."
