@@ -18,11 +18,17 @@ class WelcomeController < ApplicationController
       response_json = JSON.parse(res.body)
       # get the status of the receipt
       status = response_json["status"]
-      flash[:notice] = response_json.inspect
+      flash.now[:notice] = response_json.inspect
       if (status == "fail")
-        # todo
+        redirect_to welcome_index_url, alert: response_json["message"]
       else
-        # todo
+        @receipt_id = response_json["receipt_id"]
+        @checked_at = response_json["time"]
+        @total_authentic = response_json["total_authentic"]
+        @total_fracked = response_json["total_fracked"]
+        @total_counterfeit = response_json["total_counterfeit"]
+        @total_lost = response_json["total_lost"]
+        @coins = response_json["receipt"]
       end
     else
       redirect_to welcome_index_url, alert: "Something went wrong while checking the receipt. Please try again."
