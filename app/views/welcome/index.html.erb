@@ -6,21 +6,23 @@
   <p id="notice"><%= notice %></p>
   <div class="form-container">
     <%= form_tag({:action => "upload"}, {:multipart => true, :method => :post}) do %>
-    <div class="field">
-      <%= label_tag "email" %>
-      <%= text_field_tag "email" %>
-    </div>
-    <div class="field">
-      <%= label_tag "bit_shares_account" %>
-      <%= text_field_tag "bit_shares_account" %>
-    </div class="field">
-    <div class="field">
-      <%= label_tag "cloud_coin_file" %>
-      <%= file_field_tag 'cloud_coin_file' %>
-    </div>
-    <div class="field">
-      <%= submit_tag("Upload") %>
-    </div>  
+      <div class="form-inner">
+        <div class="field">
+          <%= label_tag "email" %>
+          <%= text_field_tag "email" %>
+        </div>
+        <div class="field">
+          <%= label_tag "bit_shares_account" %>
+          <%= text_field_tag "bit_shares_account" %>
+        </div class="field">
+        <div class="field">
+          <%= label_tag "cloud_coin_file" %>
+          <%= file_field_tag 'cloud_coin_file' %>
+        </div>
+        <div class="field">
+          <%= submit_tag "Upload", class: "btn" %>
+        </div>
+      </div>      
     <% end %>
   </div>
 </section>
