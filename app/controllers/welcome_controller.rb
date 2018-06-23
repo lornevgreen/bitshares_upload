@@ -18,7 +18,7 @@ class WelcomeController < ApplicationController
       response_json = JSON.parse(res.body)
       # get the status of the receipt
       status = response_json["status"]
-      flash.now[:notice] = response_json.inspect
+      # flash.now[:notice] = response_json.inspect
       if (status == "fail")
         redirect_to welcome_index_url, alert: response_json["message"]
       else
