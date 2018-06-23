@@ -1,2 +1,9 @@
-<h1>Welcome#review</h1>
-<p>Find me in app/views/welcome/review.html.erb</p>
+<section class="upload-bitshares">
+  <h1>Upload to Bitshares</h1>
+  <div class="steps">
+    Step 1 - Select Files | <b>Step 2 - Review</b> | Step 3 - Upload
+  </div>
+  <% flash.each do |name, msg| -%>
+    <%= content_tag :div, msg, class: name %>
+  <% end -%>
+</section>

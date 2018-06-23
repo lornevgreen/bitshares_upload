@@ -25,16 +25,15 @@ class WelcomeController < ApplicationController
         # todo
       end
     else
-      redirect_to welcome_index_url, notice: "Something went wrong while checking the receipt. Please try again."
+      redirect_to welcome_index_url, alert: "Something went wrong while checking the receipt. Please try again."
       return
     end
-
   end
 
   def upload
     uploaded_io = params["cloud_coin_file"]
     if uploaded_io == nil || uploaded_io == ""
-      redirect_to welcome_index_url, notice: "Stack file is missing. Please try again."
+      redirect_to welcome_index_url, alert: "Stack file is missing. Please try again."
       return
     end
     # Generate a file name that will be unique YYYYMMSSuploadedfile.stack
@@ -79,7 +78,7 @@ class WelcomeController < ApplicationController
       redirect_to controller: "welcome", action: "review", file_name: generated_file_name, receipt: receipt
     else
       # if uploaded file is NOT a cloudcoin stack file
-      redirect_to welcome_index_url, notice: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+      redirect_to welcome_index_url, alert: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
     end
   end
 end
