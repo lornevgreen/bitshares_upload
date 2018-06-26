@@ -20,6 +20,9 @@ https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/ngin
 
 ## REFERENCES
 - https://ruby-doc.org/stdlib-2.5.1/libdoc/net/http/rdoc/Net/HTTP.html
+- Markdown Guides
+	- https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#code
+	- https://guides.github.com/features/mastering-markdown/
 
 # STEPS TO GET ON BITSHARES
 
@@ -34,5 +37,48 @@ on other side - Ropsten Testnet ETH node + watcher + script
 **Library:** [link](https://github.com/TrustyFund/vuex-bitshares "https://github.com/TrustyFund/vuex-bitshares")
 
 
+# STAGING SERVER
 
-# STAGING 
+Get a VPS from Digital Ocean with the config: 8 GB Memory / 160 GB Disk / Debian 8.10 x64
+
+- Multi-threading through Boost library for witness_node
+- witness_node keeps one thread for consensus only
+
+Create a 50 GB Swap File:
+```bash
+fallocate -l 50G /swapfile
+```
+
+Verify that the correct amount of space was reserved:
+```bash
+ls -lh /swapfile
+```
+
+Make the file only accessible to root:
+```bash
+chmod 600 /swapfile
+```
+
+Verify the permissions change:
+```bash
+ls -lh /swapfile
+```
+
+Mark the file as swap space:
+```bash
+mkswap /swapfile
+```
+
+Enable the swap file, allowing our system to start utilizing it:
+```bash
+swapon /swapfile
+```
+
+Verify that the swap is available:
+```bash
+swapon --show
+```
+and
+```bash
+free -h
+```
