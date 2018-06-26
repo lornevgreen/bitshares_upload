@@ -82,3 +82,16 @@ and
 ```bash
 free -h
 ```
+
+Install software
+```bash
+sudo apt-get update && sudo apt-get install gcc-4.9 g++-4.9 cmake make \
+                     libbz2-dev libdb++-dev libdb-dev \
+                     libssl-dev openssl libreadline-dev \
+                     autoconf libtool git libcurl4-openssl-dev \
+                     autotools-dev build-essential \
+                     g++ libbz2-dev libicu-dev python-dev screen -y
+```
+
+## REFERENCES
+- https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04
