@@ -13,7 +13,6 @@
 ## LINKS
 
 ## DATABASE CREATION
-- 
 
 ## DEPLOYMENT INSTRUCTIONS
 https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/deploy_updates.html
@@ -91,6 +90,13 @@ sudo apt-get update && sudo apt-get install gcc-4.9 g++-4.9 cmake make \
                      autoconf libtool git libcurl4-openssl-dev \
                      autotools-dev build-essential \
                      g++ libbz2-dev libicu-dev python-dev screen -y
+```
+
+Running Witness Node using screen
+```bash
+/bitshares/bitshares-core/programs/witness_node:$ screen -dmS cctestnet ./witness_node
+
+$ screen -r cctestnet
 ```
 
 ## REFERENCES
