@@ -4,52 +4,63 @@ class WelcomeController < ApplicationController
   def index
   end
 
-  # GET  /welcome/review
-  def review
-    # Get receipt from params
-    receipt = params["receipt"]
-    
-    # Check Receipt using Get Receipt Service
-    uri = URI("https://bank.cloudcoin.global/service/get_receipt")
-    res = Net::HTTP.post_form(uri, "rn" => receipt, 
-      "pk" => "00000000000000000000000000000000")
-    
-    # res.code should be 200
-    
-    if (res.is_a?(Net::HTTPSuccess))
+  # GET  /welcome/completed
+  def completed
+    # Get receipt and email from params
+    receipt_id = params["receipt_id"]
+    account_email = params["account_email"]
 
-      # Receive the JSON response and parse it
-      response_json = JSON.parse(res.body)
-      
-      # get the status of the receipt
-      status = response_json["status"]
-
-      # If the status is fail...
-      if (status == "fail")
-        # Redirect to index
-        redirect_to welcome_index_url, alert: response_json["message"]
-        return
-      else
-        # Extract data from JSON
-        @receipt_id = response_json["receipt_id"]
-        @checked_at = response_json["time"]
-        @total_authentic = response_json["total_authentic"]
-        @total_fracked = response_json["total_fracked"]
-        @total_counterfeit = response_json["total_counterfeit"]
-        @total_lost = response_json["total_lost"]
-        @coins = response_json["receipt"].compact
-      end
-    else
+    # Check if receipt and email params are blank
+    if receipt_id.blank? || account_email.blank?
       redirect_to welcome_index_url, alert: "Something went wrong while checking the receipt. Please try again."
       return
     end
+
+    # get the JSON response from the Cloudcoin Get Receipt Service
+    response_json = get_receipt_json(receipt_id, account_email)
+
+    # Check if the response is blank
+    if response_json.blank?
+      # If the response is blank, redirect to index
+      redirect_to welcome_index_url, alert: "Something went wrong while checking the receipt. Please try again."
+      return
+    end
+      
+    # get the status of the receipt
+    status = response_json["status"]
+    
+    # If the status is fail...
+    if (status == "fail")
+      # Redirect to index
+      redirect_to welcome_index_url, alert: response_json["message"]
+      return
+    end
+    
+    # status is not fail...
+    # Extract data from JSON
+    @receipt_id = response_json["receipt_id"]
+    @checked_at = response_json["time"]
+    @total_authentic = response_json["total_authentic"]
+    @total_fracked = response_json["total_fracked"]
+    @total_counterfeit = response_json["total_counterfeit"]
+    @total_lost = response_json["total_lost"]
+    @coins = response_json["receipt"].compact
   end
 
   # POST /welcome/upload
   # No View
   def upload
+    # get account
+    account_email = params["email"]
+
     # get uploaded file
     uploaded_io = params["cloud_coin_file"]
+
+    # check if there was no email
+    if account_email.blank?
+      redirect_to welcome_index_url, alert: "Email is missing. Please try again."
+      return
+    end
 
     # check if there was no file selected
     if uploaded_io == nil || uploaded_io == ""
@@ -102,17 +113,45 @@ class WelcomeController < ApplicationController
       
       if (status == "error")
         # if the status is "error", redirect to index
-        # TODO: Reveal error message in response_json["message"]
-        redirect_to welcome_index_url, notice: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+        error_msg = response_json["message"]
+        if error_msg.blank?
+          error_msg = "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+        end
+        redirect_to welcome_index_url, notice: error_msg
         return
+      else
+        # status should be "importing"
+        # get the receipt id from the response and redirect to review
+        receipt = response_json["receipt"]
+        asdf
+        redirect_to controller: "welcome", action: "review", file_name: generated_file_name, receipt: receipt
       end
-
-      # get the receipt id from the response and redirect to review
-      receipt = response_json["receipt"]
-      redirect_to controller: "welcome", action: "review", file_name: generated_file_name, receipt: receipt
     else
       # if uploaded file is NOT a cloudcoin stack file
       redirect_to welcome_index_url, alert: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+    end
+  end
+
+  private
+
+  # Uses Cloudcoin Get Receipt Service
+  # https://bank.cloudcoin.global/service/get_receipt?rn=receipt_id&account=account_email
+  def get_receipt_json(receipt_id, account_email)
+
+    # Check Receipt using Get Receipt Service
+    uri = URI("https://bank.cloudcoin.global/service/get_receipt")
+    res = Net::HTTP.post_form(uri, "rn" => receipt_id, 
+      "account" => account_email)
+    
+    # res.code should be 200
+    
+    if (res.is_a?(Net::HTTPSuccess))
+
+      # Receive the JSON response and parse it
+      response_json = JSON.parse(res.body)
+      return response_json
+    else
+      return nil
     end
   end
 end
