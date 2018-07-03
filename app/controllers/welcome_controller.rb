@@ -1,27 +1,36 @@
 require 'net/http'
 class WelcomeController < ApplicationController
+  # GET  /welcome/index
   def index
   end
 
+  # GET  /welcome/review
   def review
+    # Get receipt from params
     receipt = params["receipt"]
-    # Check Receipt
-    uri = URI("https://bitshares.cloudcoin.global/get_receipt.aspx")
+    
+    # Check Receipt using Get Receipt Service
+    uri = URI("https://bank.cloudcoin.global/service/get_receipt")
     res = Net::HTTP.post_form(uri, "rn" => receipt, 
-      "pk" => "E5E56C0D-6792-469E-B7A6-30F9E3F715C9")
+      "pk" => "00000000000000000000000000000000")
     
     # res.code should be 200
     
     if (res.is_a?(Net::HTTPSuccess))
-      # if the receipt number and response are correct
-      # convert the response into JSON object
+
+      # Receive the JSON response and parse it
       response_json = JSON.parse(res.body)
+      
       # get the status of the receipt
       status = response_json["status"]
-      # flash.now[:notice] = response_json.inspect
+
+      # If the status is fail...
       if (status == "fail")
+        # Redirect to index
         redirect_to welcome_index_url, alert: response_json["message"]
+        return
       else
+        # Extract data from JSON
         @receipt_id = response_json["receipt_id"]
         @checked_at = response_json["time"]
         @total_authentic = response_json["total_authentic"]
@@ -36,15 +45,25 @@ class WelcomeController < ApplicationController
     end
   end
 
+  # POST /welcome/upload
+  # No View
   def upload
+    # get uploaded file
     uploaded_io = params["cloud_coin_file"]
+
+    # check if there was no file selected
     if uploaded_io == nil || uploaded_io == ""
       redirect_to welcome_index_url, alert: "Stack file is missing. Please try again."
       return
     end
+
+    # TODO: Generate a more secure filename
     # Generate a file name that will be unique YYYYMMSSuploadedfile.stack
     # Eg. 20180616CloudCoins.stack
     generated_file_name = Time.now.strftime("%Y%m%d%H%M%S") + uploaded_io.original_filename
+
+    # TODO: check if the file already exists
+    
     # Save the uploaded file to public/uploads
     File.open(Rails.root.join('public', 'uploads', generated_file_name), 'wb') do |file|
       file.write(uploaded_io.read)
@@ -58,12 +77,14 @@ class WelcomeController < ApplicationController
 
     # https://ruby-doc.org/stdlib-2.5.1/libdoc/net/http/rdoc/Net/HTTP.html
     # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
-    uri = URI.parse("https://bitshares.cloudcoin.global/deposit_one_stack.aspx")
+    # We will be posting to the following URI
+    uri = URI.parse("https://bank.cloudcoin.global/service/deposit_one_stack")
+    
     # Response
     res = ""
     Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
       req = Net::HTTP::Post.new(uri)
-      req.set_form_data("stack" => uploaded_file_content)
+      req.set_form_data("account" => "CloudCoin@Protonmail.com", "stack" => uploaded_file_content)
       res = http.request(req)
       # res.code should be 200
     end
@@ -72,14 +93,21 @@ class WelcomeController < ApplicationController
     if (res.is_a?(Net::HTTPSuccess))
       # if cloudcoin deposit one stack service was able to
       # process the request
+      # 
+      # Parse the JSON response
       response_json = JSON.parse(res.body)
-      # get the status
+      
+      # get the status from the JSON response
       status = response_json["status"]
+      
       if (status == "error")
-        # real error message is response_json["message"]
+        # if the status is "error", redirect to index
+        # TODO: Reveal error message in response_json["message"]
         redirect_to welcome_index_url, notice: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
         return
       end
+
+      # get the receipt id from the response and redirect to review
       receipt = response_json["receipt"]
       redirect_to controller: "welcome", action: "review", file_name: generated_file_name, receipt: receipt
     else
