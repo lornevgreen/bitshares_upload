@@ -25,7 +25,7 @@ class WelcomeController < ApplicationController
       redirect_to welcome_index_url, alert: "Something went wrong while checking the receipt. Please try again."
       return
     end
-      
+
     # get the status of the receipt
     status = response_json["status"]
     
@@ -136,6 +136,7 @@ class WelcomeController < ApplicationController
 
   # Uses Cloudcoin Get Receipt Service
   # https://bank.cloudcoin.global/service/get_receipt?rn=receipt_id&account=account_email
+  # returns the response as nil or in JSON
   def get_receipt_json(receipt_id, account_email)
 
     # Check Receipt using Get Receipt Service
@@ -144,9 +145,7 @@ class WelcomeController < ApplicationController
       "account" => account_email)
     
     # res.code should be 200
-    
     if (res.is_a?(Net::HTTPSuccess))
-
       # Receive the JSON response and parse it
       response_json = JSON.parse(res.body)
       return response_json
