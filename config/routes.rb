@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 	#  is at the lowest priority and will be applied last.
 	root :to => "welcome#index"
 	get 'welcome/index'
-	get 'welcome/finished'
+	get 'welcome/completed'
 	post 'welcome/upload'
   
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
