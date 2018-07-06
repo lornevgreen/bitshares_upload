@@ -1,18 +1,18 @@
 require 'net/http'
 class WelcomeController < ApplicationController
-  # GET  /welcome/index
-  def index
+  # GET  /welcome/deposit
+  def deposit
   end
 
-  # GET  /welcome/completed
-  def completed
+  # GET  /welcome/deposit_completed
+  def deposit_completed
     # Get receipt and email from params
     receipt_id = params["receipt"]
     user_email = params["email"]
 
     # Check if receipt and email params are blank
     if receipt_id.blank? || user_email.blank?
-      redirect_to welcome_index_url, alert: "Something went wrong while checking the receipt. Please try again."
+      redirect_to welcome_deposit_url, alert: "Something went wrong while checking the receipt. Please try again."
       return
     end
 
@@ -21,8 +21,8 @@ class WelcomeController < ApplicationController
 
     # Check if the response is blank
     if response_json.blank?
-      # If the response is blank, redirect to index
-      redirect_to welcome_index_url, alert: "Something went wrong while checking the receipt. Please try again."
+      # If the response is blank, redirect to deposit
+      redirect_to welcome_deposit_url, alert: "Something went wrong while checking the receipt. Please try again."
       return
     end
 
@@ -31,8 +31,8 @@ class WelcomeController < ApplicationController
     
     # If the status is fail...
     if (status == "fail")
-      # Redirect to index
-      redirect_to welcome_index_url, alert: response_json["message"]
+      # Redirect to deposit
+      redirect_to welcome_deposit_url, alert: response_json["message"]
       return
     end
     
@@ -50,6 +50,7 @@ class WelcomeController < ApplicationController
   # POST /welcome/upload
   # No View
   def upload
+    puts "******************STARTED UPLOAD ACTION"
     # get account
     user_email = params["email"]
     # get bit shares account
@@ -61,7 +62,7 @@ class WelcomeController < ApplicationController
 
     # check if there was no email entered
     if user_email.blank?
-      redirect_to welcome_index_url, alert: "Email is missing. Please try again."
+      redirect_to welcome_deposit_url, alert: "Email is missing. Please try again."
       return
     end
 
@@ -71,7 +72,7 @@ class WelcomeController < ApplicationController
 
     # check if there was no file selected
     if uploaded_io == nil || uploaded_io == ""
-      redirect_to welcome_index_url, alert: "Stack file is missing. Please try again."
+      redirect_to welcome_deposit_url, alert: "Stack file is missing. Please try again."
       return
     end
 
@@ -82,15 +83,21 @@ class WelcomeController < ApplicationController
 
     # TODO: check if the file already exists
     
-    uploaded_io_full_path = Rails.root.join('public', 'uploads', generated_file_name)
+    uploaded_io_full_path = Rails.root.join('storage', generated_file_name)
     # Eg. uploaded_io_full_path is 
     # => #<Pathname:/home/dynamic/Desktop/workspace/bitshares-upload/public/uploads/201807051231401.CloudCoins.Counterfeit1.stack>
-    
+
     # Save the uploaded file to public/uploads
+    start_time = Time.now
+    puts "*************START TIME: " + start_time.to_s
     File.open(uploaded_io_full_path, 'wb') do |file|
       file.write(uploaded_io.read)
     end
-    
+    finish_time = Time.now
+    puts "*************FINISH TIME: " + finish_time.to_s
+    difference = finish_time - start_time
+    puts "*************TIME TO SAVE FILE: " + difference.to_s
+
     # Get the file content
     uploaded_io_content = File.read(uploaded_io_full_path)
 
@@ -101,12 +108,18 @@ class WelcomeController < ApplicationController
     
     # Response
     res = ""
+    start_time = Time.now
+    puts "*************START TIME: " + start_time.to_s
     Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
       req = Net::HTTP::Post.new(uri)
       req.set_form_data("account" => depository_account, "stack" => uploaded_io_content)
       res = http.request(req)
       # res.code should be 200
     end
+    finish_time = Time.now
+    puts "*************FINISH TIME: " + finish_time.to_s
+    difference = finish_time - start_time
+    puts "*************TIME TO SEND TO CLOUDCOIN DEPOSIT ONE STACK: " + difference.to_s
 
 
     if (res.is_a?(Net::HTTPSuccess))
@@ -120,23 +133,23 @@ class WelcomeController < ApplicationController
       status = response_json["status"]
       
       if (status == "error")
-        # if the status is "error", redirect to index
+        # if the status is "error", redirect to deposit
         error_msg = response_json["message"]
         if error_msg.blank?
           error_msg = "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
         end
-        redirect_to welcome_index_url, notice: error_msg
+        redirect_to welcome_deposit_url, notice: error_msg
         return
       else
         # status should be "importing"
-        # get the receipt id from the response and redirect to completed
+        # get the receipt id from the response and redirect to deposit_completed
         receipt_id = response_json["receipt"]
-        redirect_to controller: "welcome", action: "completed", receipt: receipt_id, email: user_email
+        redirect_to controller: "welcome", action: "deposit_completed", receipt: receipt_id, email: user_email
         return
       end
     else
       # if uploaded file is NOT a cloudcoin stack file
-      redirect_to welcome_index_url, alert: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+      redirect_to welcome_deposit_url, alert: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
     end
   end
 
@@ -164,6 +177,9 @@ class WelcomeController < ApplicationController
     if (res.is_a?(Net::HTTPSuccess))
       # Receive the JSON response and parse it
       response_json = JSON.parse(res.body)
+      puts "*******************-------------*******************"
+      puts response_json
+      puts "********"
       return response_json
     else
       return nil
