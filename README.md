@@ -1,5 +1,15 @@
 # README
 
+Deposit
+- Send .stack file to depository
+- Send message/memo to Bitshares Wallet
+- Wallet distributes token to end user
+
+Withdraw
+- Wallet Receives tokens
+- Message to CloudBank
+- Send .stack to end user
+
 ## TODO
 
 ## VERSIONS
@@ -60,6 +70,7 @@ https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/ngin
 ## REFERENCES
 - https://ruby-doc.org/stdlib-2.5.1/libdoc/net/http/rdoc/Net/HTTP.html
 - https://github.com/CloudCoinConsortium/CloudBank-V2
+- https://medium.com/cedarcode/rails-5-2-credentials-9b3324851336
 - Markdown Guides
 	- https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#code
 	- https://guides.github.com/features/mastering-markdown/
