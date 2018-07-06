@@ -153,6 +153,17 @@ class WelcomeController < ApplicationController
     end
   end
 
+  def withdraw
+    # number of cloudcoins that need to be emailed to the user
+    withdraw_amount = 1
+
+    # get the email of the user
+    email = "get.dipen@gmail.com"
+
+    get_stack_file(withdraw_amount)
+    email_stack_file()
+  end
+
   private
 
   # Uses Cloudcoin Get Receipt Service
@@ -177,12 +188,19 @@ class WelcomeController < ApplicationController
     if (res.is_a?(Net::HTTPSuccess))
       # Receive the JSON response and parse it
       response_json = JSON.parse(res.body)
-      puts "*******************-------------*******************"
-      puts response_json
-      puts "********"
       return response_json
     else
       return nil
     end
+  end
+
+  # Contacts the Withdraw One Stack service and requests Cloud Coins
+  # Returns the file path of the stack file
+  # GET https://bank.cloudcoin.global/service/withdraw_account?amount=254&pk=ef50088c8218afe53ce2ecd655c2c786&account=CloudCoin@Protonmail.com
+  def get_stack_file
+
+  end
+
+  def email_stack_file
   end
 end
