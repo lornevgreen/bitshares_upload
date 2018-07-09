@@ -144,6 +144,7 @@ class WelcomeController < ApplicationController
         # status should be "importing"
         # get the receipt id from the response and redirect to deposit_completed
         receipt_id = response_json["receipt"]
+        flash[:notice] = "Your authentic coins will be uploaded to Bitshares shortly. We will send you an email notification to " + user_email
         redirect_to controller: "welcome", action: "deposit_completed", receipt: receipt_id, email: user_email
         return
       end
