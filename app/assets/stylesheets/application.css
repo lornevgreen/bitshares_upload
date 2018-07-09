@@ -1,21 +1,5 @@
-/*
- * This is a manifest file that'll be compiled into application.css, which will include all the files
- * listed below.
- *
- * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
- * vendor/assets/stylesheets directory can be referenced here using a relative path.
- *
- * You're free to add application-wide styles to this file and they'll appear at the bottom of the
- * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
- * files in this directory. Styles in this file should be added after the last require_* statement.
- * It is generally better to create a new file per style scope.
- *
- *= require reset
- *= require_tree .
- *= require_self
- */
-
 @import url("https://fonts.googleapis.com/css?family=Fira+Sans:300,400");
+@import url("https://fonts.googleapis.com/css?family=Inconsolata");
 html {
   box-sizing: border-box;
 }
@@ -35,6 +19,7 @@ body {
 
   font-family: "Fira Sans", "Helvetica Neue", sans-serif;
   color: #191919;
+  margin: 0px;
 }
 main {
   flex: 1;
@@ -42,10 +27,9 @@ main {
 /*////////////////////////////////*/
 header {
   padding: 1em;
-  /*   background: #262626; */
   background: #338fff;
   color: white;
-  font-size: 2em;
+  font-size: 1.667em;
   text-transform: uppercase;
 }
 .upload-bitshares {
@@ -55,7 +39,7 @@ header {
 }
 .upload-bitshares h1 {
   font-family: "Fira Sans", "Helvetica Neue", sans-serif;
-  font-size: 2.1em;
+  font-size: 2.444em;
   text-transform: uppercase;
   /*   font-weight: bold; */
   letter-spacing: 0.09em;
@@ -64,7 +48,7 @@ header {
 }
 
 .steps {
-  font-size: 1.1em;
+  font-size: 1.33em;
   font-weight: 300;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -77,7 +61,7 @@ header {
 
 .form-container,
 .table-container {
-  padding: 3em 0;
+  padding: 1.667em 0;
 }
 .form-inner {
 }
@@ -105,11 +89,14 @@ header {
 .tfield > .col1 + * {
   flex: 1 0 220px;
 }
-.form-inner > .field input:not([type="checkbox"]),
-.form-inner > .field textarea,
+.field input[type="text"],
+.field input[type="email"],
+.field > .field textarea,
+.field input[type="file"],
 .tfield > .col2 {
   padding: 15px;
   border: 2px solid #191919;
+  border-radius: 4px;
   outline: none;
   font: normal 18px/1.5 "Fira Sans", "Helvetica Neue", sans-serif;
   transition: background-color 0.25s, border-color 0.25s, color 0.25s;
@@ -122,35 +109,66 @@ header {
   border: none;
   cursor: pointer;
 }
+
 .tfield > .col2 {
   border-style: none;
+  font-family: "Inconsolata", monospace;
+  font-size: 1.33em;
 }
 .btn {
-  width: 100%;
+  /*   width: 100%; */
+  border-radius: 4px;
   margin-top: 1em;
   cursor: pointer;
   text-transform: uppercase;
   background: #338fff;
-  color: white;
+  color: #fff;
   font: normal 18px/1.5 "Fira Sans", "Helvetica Neue", sans-serif;
   -webkit-transition: background-color 0.25s, border-color 0.25s, color 0.25s;
   transition: background-color 0.25s, border-color 0.25s, color 0.25s;
-  display: block;
+  display: inner-block;
   text-decoration: none;
   text-align: center;
+  letter-spacing: 0.09em;
   padding: 1em;
+  border: 1px solid #007bff;
 }
 .btn:hover {
-  background: white;
-  color: black;
+  /*   background: white;
+  color: #338fff;;
+  border: 1px solid #338fff; */
+  background: #007bff;
 }
 
 /*/////////////////////*/
 .alert {
-  padding-top: 3em;
-  color: red;
+  margin-top: 2em;
+  line-height: 1.667em;
+  padding: 1.667em;
+  color: #721c24;
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
 }
 .notice {
-  padding-top: 3em;
-  color: green;
+  margin-top: 2em;
+  line-height: 1.667em;
+  padding: 1.667em;
+  color: #155724;
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+}
+
+.notify p {
+  padding-top: 1.667em;
+  line-height: 1.667;
+}
+
+footer {
+  margin-top: 2.444em;
+  padding: 2.444em;
+  background: #338fff;
+  color: white;
+  text-align: center;
 }
