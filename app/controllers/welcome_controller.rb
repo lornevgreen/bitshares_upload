@@ -153,6 +153,7 @@ class WelcomeController < ApplicationController
     end
   end
 
+  # GET  /welcome/withdraw
   def withdraw
     # number of cloudcoins that need to be emailed to the user
     withdraw_amount = 1
@@ -160,8 +161,14 @@ class WelcomeController < ApplicationController
     # get the email of the user
     email = "get.dipen@gmail.com"
 
-    get_stack_file(withdraw_amount)
-    email_stack_file()
+    file_path = get_stack_file_path(withdraw_amount)
+    
+    if(email_stack_file(file_path, email))
+      redirect_to withdraw_completed_path
+    end
+  end
+
+  def withdraw_completed
   end
 
   private
@@ -197,10 +204,31 @@ class WelcomeController < ApplicationController
   # Contacts the Withdraw One Stack service and requests Cloud Coins
   # Returns the file path of the stack file
   # GET https://bank.cloudcoin.global/service/withdraw_account?amount=254&pk=ef50088c8218afe53ce2ecd655c2c786&account=CloudCoin@Protonmail.com
-  def get_stack_file
+  def get_stack_file_path(withdraw_amount)
+    depository_account = "depository"
+    uri = URI("https://bank.cloudcoin.global/service/withdraw_account")
+    params = {:amount => withdraw_amount, :pk => Rails.application.credentials.cloudcoin[:private_key], :account => depository_account}
+    uri.query = URI.encode_www_form(params)
 
+    # Response
+    res = ""
+    Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
+      req = Net::HTTP::Get.new(uri)
+      res = http.request(req) # Net::HTTPResponse object
+      # res.code should be 200
+    end
+
+    # res.code should be 200
+    if (res.is_a?(Net::HTTPSuccess))
+      # TODO save file
+      file_path = ""
+      return file_path
+    else
+      return nil
+    end
   end
 
-  def email_stack_file
+  def email_stack_file(file_path, email)
+    # TODO: Email stack file to user
   end
 end
