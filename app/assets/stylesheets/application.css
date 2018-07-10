@@ -1,3 +1,20 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require reset
+ *= require_tree .
+ *= require_self
+ */
+
 @import url("https://fonts.googleapis.com/css?family=Fira+Sans:300,400");
 @import url("https://fonts.googleapis.com/css?family=Inconsolata");
 html {
@@ -65,17 +82,17 @@ header {
 }
 .form-inner {
 }
-.form-inner .field {
+.field {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
 }
 
-.form-inner > .field:not(:last-child),
+.field:not(:last-child),
 .tfield:not(:last-child) {
   margin-bottom: 1.25em;
 }
-.form-inner > .field label,
+.field label,
 .tfield > .col1 {
   padding: 8px 8px 8px 0;
   font-size: 1.1em;
@@ -85,28 +102,63 @@ header {
   flex: 1 0 120px;
   max-width: 220px;
 }
-.form-inner > .field label + *,
+.field label + *,
 .tfield > .col1 + * {
   flex: 1 0 220px;
 }
 .field input[type="text"],
 .field input[type="email"],
-.field > .field textarea,
+.field textarea,
 .field input[type="file"],
 .tfield > .col2 {
-  padding: 15px;
+  padding: 0.85em;
   border: 2px solid #191919;
   border-radius: 4px;
-  outline: none;
+  outline: 0 none;
   font: normal 18px/1.5 "Fira Sans", "Helvetica Neue", sans-serif;
   transition: background-color 0.25s, border-color 0.25s, color 0.25s;
 }
-.form-inner .field input:not([type="checkbox"]):focus,
-.form-inner .field textarea:focus {
+.field input[type="submit"],
+.field input[type="reset"],
+.btn {
+  background: #338fff;
+  color: #fff;
+  padding: 0.85em;
+  border: 2px solid #007bff;
+  border-radius: 4px;
+  display: inner-block;
+  cursor: pointer;
+  font: normal 18px/1.5 "Fira Sans", "Helvetica Neue", sans-serif;
+  text-transform: uppercase;
+  transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+  letter-spacing: 0.09em;
+  outline: 0 none;
+  padding-left: 2em;
+  padding-right: 2em;
+  text-decoration: none;
+}
+.field input[type="submit"]:hover,
+.field input[type="reset"]:hover,
+.btn:hover {
+  background: #007bff;
+}
+.field input[type="submit"]:focus,
+.field input[type="reset"]:focus,
+.btn:focus {
+  background: #007bff;
+}
+
+.field input[type="text"]:focus,
+.field input[type="email"]:focus,
+.field input[type="submit"]:focus,
+.field input[type="reset"]:focus,
+.field textarea:focus,
+.field input[type="file"]:focus,
+.btn:focus {
   border: 2px solid #338fff;
 }
-.form-inner > .field input[type="file"] {
-  border: none;
+.field input[type="file"] {
+  border: 2px solid transparent;
   cursor: pointer;
 }
 
@@ -114,30 +166,6 @@ header {
   border-style: none;
   font-family: "Inconsolata", monospace;
   font-size: 1.33em;
-}
-.btn {
-  /*   width: 100%; */
-  border-radius: 4px;
-  margin-top: 1em;
-  cursor: pointer;
-  text-transform: uppercase;
-  background: #338fff;
-  color: #fff;
-  font: normal 18px/1.5 "Fira Sans", "Helvetica Neue", sans-serif;
-  -webkit-transition: background-color 0.25s, border-color 0.25s, color 0.25s;
-  transition: background-color 0.25s, border-color 0.25s, color 0.25s;
-  display: inner-block;
-  text-decoration: none;
-  text-align: center;
-  letter-spacing: 0.09em;
-  padding: 1em;
-  border: 1px solid #007bff;
-}
-.btn:hover {
-  /*   background: white;
-  color: #338fff;;
-  border: 1px solid #338fff; */
-  background: #007bff;
 }
 
 /*/////////////////////*/
