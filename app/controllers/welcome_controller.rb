@@ -50,15 +50,12 @@ class WelcomeController < ApplicationController
   # POST /welcome/upload
   # No View
   def upload
-    puts "******************STARTED UPLOAD ACTION"
     # get account
     user_email = params["email"]
     # get bit shares account
     user_bit_shares_account = params["bit_shares_account"]
     # get uploaded file
     uploaded_io = params["cloud_coin_file"]
-
-    depository_account = "depository"
 
     # check if there was no email entered
     if user_email.blank?
@@ -83,21 +80,15 @@ class WelcomeController < ApplicationController
 
     # TODO: check if the file already exists
     
-    uploaded_io_full_path = Rails.root.join('storage', generated_file_name)
+    uploaded_io_full_path = Rails.root.join('storage', 'upload', generated_file_name)
     # Eg. uploaded_io_full_path is 
     # => #<Pathname:/home/dynamic/Desktop/workspace/bitshares-upload/public/uploads/201807051231401.CloudCoins.Counterfeit1.stack>
 
     # Save the uploaded file to public/uploads
-    start_time = Time.now
-    puts "*************START TIME: " + start_time.to_s
     File.open(uploaded_io_full_path, 'wb') do |file|
       file.write(uploaded_io.read)
     end
-    finish_time = Time.now
-    puts "*************FINISH TIME: " + finish_time.to_s
-    difference = finish_time - start_time
-    puts "*************TIME TO SAVE FILE: " + difference.to_s
-
+    
     # Get the file content
     uploaded_io_content = File.read(uploaded_io_full_path)
 
@@ -108,19 +99,14 @@ class WelcomeController < ApplicationController
     
     # Response
     res = ""
-    start_time = Time.now
-    puts "*************START TIME: " + start_time.to_s
+
     Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
       req = Net::HTTP::Post.new(uri)
-      req.set_form_data("account" => depository_account, "stack" => uploaded_io_content)
+      req.set_form_data(account: Rails.application.credentials.cloudcoin[:account], 
+                        stack: uploaded_io_content)
       res = http.request(req)
       # res.code should be 200
     end
-    finish_time = Time.now
-    puts "*************FINISH TIME: " + finish_time.to_s
-    difference = finish_time - start_time
-    puts "*************TIME TO SEND TO CLOUDCOIN DEPOSIT ONE STACK: " + difference.to_s
-
 
     if (res.is_a?(Net::HTTPSuccess))
       # if cloudcoin deposit one stack service was able to
@@ -170,6 +156,7 @@ class WelcomeController < ApplicationController
   end
 
   def withdraw_completed
+    render :json => {"test1" => "test2"}
   end
 
   private
@@ -206,9 +193,10 @@ class WelcomeController < ApplicationController
   # Returns the file path of the stack file
   # GET https://bank.cloudcoin.global/service/withdraw_account?amount=254&pk=ef50088c8218afe53ce2ecd655c2c786&account=CloudCoin@Protonmail.com
   def get_stack_file_path(withdraw_amount)
-    depository_account = "depository"
     uri = URI("https://bank.cloudcoin.global/service/withdraw_account")
-    params = {:amount => withdraw_amount, :pk => Rails.application.credentials.cloudcoin[:private_key], :account => depository_account}
+    params = {:amount => withdraw_amount, 
+              :pk => Rails.application.credentials.cloudcoin[:private_key], 
+              :account => Rails.application.credentials.cloudcoin[:account]}
     uri.query = URI.encode_www_form(params)
 
     # Response
@@ -221,9 +209,10 @@ class WelcomeController < ApplicationController
 
     # res.code should be 200
     if (res.is_a?(Net::HTTPSuccess))
-      # TODO save file
-      file_path = ""
-      return file_path
+      generated_file_name = Time.now.strftime("%Y%m%d%H%M%S") + "_" + withdraw_amount.to_s + ".CloudCoins.stack" 
+      download_io_full_path = Rails.root.join('storage', 'download', generated_file_name)
+      File.open(download_io_full_path, 'w') { |file| file.write(res.body) }
+      return download_io_full_path
     else
       return nil
     end
