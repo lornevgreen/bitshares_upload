@@ -19,6 +19,9 @@ Withdraw
 ## SYSTEM DEPENDENCIES
 
 ## CONFIGURATION
+- Create directories:
+	- /storage/upload
+	- /storage/download
 
 ## CLOUDCOIN SERVICES
 
