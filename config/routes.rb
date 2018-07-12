@@ -6,7 +6,8 @@
 #  welcome_deposit_completed GET  /welcome/deposit_completed(.:format)                                                     welcome#deposit_completed
 #             welcome_upload POST /welcome/upload(.:format)                                                                welcome#upload
 #           welcome_withdraw GET  /welcome/withdraw(.:format)                                                              welcome#withdraw
-# welcome_withdraw_completed GET  /welcome/withdraw_completed(.:format)                                                    welcome#withdraw_completed
+# welcome_withdraw_completed GET  /welcome/withdraw_completed(.:format)                                                    welcome#withdraw_completed {:format=>"json"}
+#            welcome_summary GET  /welcome/summary(.:format)                                                               welcome#summary
 #         rails_service_blob GET  /rails/active_storage/blobs/:signed_id/*filename(.:format)                               active_storage/blobs#show
 #  rails_blob_representation GET  /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations#show
 #         rails_disk_service GET  /rails/active_storage/disk/:encoded_key/*filename(.:format)                              active_storage/disk#show
@@ -24,7 +25,9 @@ Rails.application.routes.draw do
 	post 'welcome/upload'
 
 	get 'welcome/withdraw'
-	get 'welcome/withdraw_completed'
+	get 'welcome/withdraw_completed', defaults: {format: 'json'}
+
+	get 'welcome/summary', defaults: {format: 'json'}
   
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
