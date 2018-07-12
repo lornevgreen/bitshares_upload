@@ -76,7 +76,7 @@ class WelcomeController < ApplicationController
     # TODO: Generate a more secure filename
     # Generate a file name that will be unique YYYYMMSSuploadedfile.stack
     # Eg. 20180616CloudCoins.stack
-    generated_file_name = Time.now.strftime("%Y%m%d%H%M%S") + uploaded_io.original_filename
+    generated_file_name = Time.now.strftime("%Y%m%d%H%M%S") + "_" + uploaded_io.original_filename
 
     # TODO: check if the file already exists
     
@@ -150,11 +150,11 @@ class WelcomeController < ApplicationController
 
     file_path = get_stack_file_path(withdraw_amount)
     if (file_path == nil)
-      redirect_to withdraw_amount_url, alert: "Withdraw One Stack service did not respond as expected"
+      redirect_to welcome_withdraw_completed_url, alert: "Withdraw One Stack service did not respond as expected"
       return
     end
     email_stack_file(email, file_path, withdraw_amount)
-    redirect_to withdraw_completed_url
+    redirect_to welcome_withdraw_completed_url, notice: "completed"
 
   end
 
@@ -162,6 +162,37 @@ class WelcomeController < ApplicationController
   def withdraw_completed
     
     render :json => {"test1" => "test2"}
+  end
+
+  # GET  /welcome/summary
+  def summary
+    uri = URI("https://bank.cloudcoin.global/service/show_coins.aspx")
+    params = {:pk => Rails.application.credentials.cloudcoin[:private_key], 
+              :account => Rails.application.credentials.cloudcoin[:account]}
+    uri.query = URI.encode_www_form(params)
+    # Response
+    res = ""
+    Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
+      req = Net::HTTP::Get.new(uri)
+      # Get the response
+      res = http.request(req) # Net::HTTPResponse object
+      # res.code should be 200
+    end
+
+    # Checking the response
+    # res.code should be 200
+    if (res.is_a?(Net::HTTPSuccess))
+      response_json = JSON.parse(res.body)
+      render :json => { ones: response_json["ones"], 
+                        fives: response_json["fives"],
+                        twentyfives: response_json["twentyfives"],
+                        hundreds: response_json["hundreds"],
+                        twohundredfifties: response_json["twohundredfifties"] }      
+    else
+      render :json => { status: "500",
+                        message: "Invalid response from Show Coins service" }
+    end
+
   end
 
   private
@@ -227,6 +258,12 @@ class WelcomeController < ApplicationController
 
       # Save the file
       File.open(download_io_full_path, 'w') { |file| file.write(file_content) }
+      
+      # TODO: check if file write was successful
+      
+      logger.info "Cloud coin file was saved"
+      logger.debug file_content_json["cloudcoin"].size.to_s + " cloudcoin(s) saved in file " + generated_file_name
+
       return download_io_full_path
     else
       return nil
