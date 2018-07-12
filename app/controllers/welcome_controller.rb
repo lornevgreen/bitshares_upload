@@ -149,13 +149,18 @@ class WelcomeController < ApplicationController
     email = "get.dipen@gmail.com"
 
     file_path = get_stack_file_path(withdraw_amount)
-    
-    if(email_stack_file(file_path, email))
-      redirect_to withdraw_completed_path
+    if (file_path == nil)
+      redirect_to withdraw_amount_url, alert: "Withdraw One Stack service did not respond as expected"
+      return
     end
+    email_stack_file(email, file_path, withdraw_amount)
+    redirect_to withdraw_completed_url
+
   end
 
+  # GET  /welcome/withdraw_completed
   def withdraw_completed
+    
     render :json => {"test1" => "test2"}
   end
 
@@ -191,9 +196,9 @@ class WelcomeController < ApplicationController
 
   # Contacts the Withdraw One Stack service and requests Cloud Coins
   # Returns the file path of the stack file
-  # GET https://bank.cloudcoin.global/service/withdraw_account?amount=254&pk=ef50088c8218afe53ce2ecd655c2c786&account=CloudCoin@Protonmail.com
+  # GET https://bank.cloudcoin.global/service/withdraw_one_stack?amount=254&pk=ef50088c8218afe53ce2ecd655c2c786&account=CloudCoin@Protonmail.com
   def get_stack_file_path(withdraw_amount)
-    uri = URI("https://bank.cloudcoin.global/service/withdraw_account")
+    uri = URI("https://bank.cloudcoin.global/service/withdraw_one_stack")
     params = {:amount => withdraw_amount, 
               :pk => Rails.application.credentials.cloudcoin[:private_key], 
               :account => Rails.application.credentials.cloudcoin[:account]}
@@ -203,22 +208,32 @@ class WelcomeController < ApplicationController
     res = ""
     Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
       req = Net::HTTP::Get.new(uri)
+      # Get the response
       res = http.request(req) # Net::HTTPResponse object
       # res.code should be 200
     end
 
+    # Checking the response
     # res.code should be 200
     if (res.is_a?(Net::HTTPSuccess))
+      # Generate file name
       generated_file_name = Time.now.strftime("%Y%m%d%H%M%S") + "_" + withdraw_amount.to_s + ".CloudCoins.stack" 
+      # Full file path
       download_io_full_path = Rails.root.join('storage', 'download', generated_file_name)
-      File.open(download_io_full_path, 'w') { |file| file.write(res.body) }
+
+      # Format the response
+      file_content_json = JSON.parse(res.body)
+      file_content = JSON.pretty_generate(file_content_json)
+
+      # Save the file
+      File.open(download_io_full_path, 'w') { |file| file.write(file_content) }
       return download_io_full_path
     else
       return nil
     end
   end
 
-  def email_stack_file(file_path, email)
+  def email_stack_file(email, file_path, withdraw_amount)
     # TODO: Email stack file to user
   end
 end
