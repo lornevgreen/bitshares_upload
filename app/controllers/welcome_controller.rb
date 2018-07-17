@@ -153,15 +153,15 @@ class WelcomeController < ApplicationController
       redirect_to welcome_withdraw_completed_url, alert: "Withdraw One Stack service did not respond as expected"
       return
     end
-    email_stack_file(email, file_path, withdraw_amount)
+    NotificationMailer.download_email(email, file_path, withdraw_amount)
     redirect_to welcome_withdraw_completed_url, notice: "completed"
-
   end
 
   # GET  /welcome/withdraw_completed
   def withdraw_completed
     
-    render :json => {"test1" => "test2"}
+    render :json => { status: "202",
+                            message: "Accepted. Email is being sent in the background" }
   end
 
   # GET  /welcome/summary
@@ -183,11 +183,11 @@ class WelcomeController < ApplicationController
     # res.code should be 200
     if (res.is_a?(Net::HTTPSuccess))
       response_json = JSON.parse(res.body)
-      render :json => { ones: response_json["ones"], 
-                        fives: response_json["fives"],
-                        twentyfives: response_json["twentyfives"],
-                        hundreds: response_json["hundreds"],
-                        twohundredfifties: response_json["twohundredfifties"] }      
+      render :json => { "1cc" => response_json["ones"], 
+                        "5cc" => response_json["fives"],
+                        "25cc" => response_json["twentyfives"],
+                        "100cc" => response_json["hundreds"],
+                        "250cc" => response_json["twohundredfifties"] }      
     else
       render :json => { status: "500",
                         message: "Invalid response from Show Coins service" }
