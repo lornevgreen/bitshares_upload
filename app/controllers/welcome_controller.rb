@@ -146,14 +146,14 @@ class WelcomeController < ApplicationController
     withdraw_amount = 1
 
     # get the email of the user
-    email = "get.dipen@gmail.com"
+    email = "dipen.chauhan@protonmail.com"
 
     file_path = get_stack_file_path(withdraw_amount)
     if (file_path == nil)
       redirect_to welcome_withdraw_completed_url, alert: "Withdraw One Stack service did not respond as expected"
       return
     end
-    NotificationMailer.download_email(email, file_path, withdraw_amount)
+    NotificationMailer.download_email(email, file_path.to_s, withdraw_amount).deliver_later
     redirect_to welcome_withdraw_completed_url, notice: "completed"
   end
 
@@ -192,7 +192,6 @@ class WelcomeController < ApplicationController
       render :json => { status: "500",
                         message: "Invalid response from Show Coins service" }
     end
-
   end
 
   private
@@ -226,6 +225,7 @@ class WelcomeController < ApplicationController
   end
 
   # Contacts the Withdraw One Stack service and requests Cloud Coins
+  # The stack file is saved to /storage/download
   # Returns the file path of the stack file
   # GET https://bank.cloudcoin.global/service/withdraw_one_stack?amount=254&pk=ef50088c8218afe53ce2ecd655c2c786&account=CloudCoin@Protonmail.com
   def get_stack_file_path(withdraw_amount)
@@ -268,9 +268,5 @@ class WelcomeController < ApplicationController
     else
       return nil
     end
-  end
-
-  def email_stack_file(email, file_path, withdraw_amount)
-    # TODO: Email stack file to user
   end
 end
