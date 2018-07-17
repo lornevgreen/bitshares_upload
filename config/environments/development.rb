@@ -30,10 +30,27 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options)
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
-
+  # Care if the mailer can't send. Default = false
+  config.action_mailer.raise_delivery_errors = true
   config.action_mailer.perform_caching = false
+  # Sending via Direct SMTP
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.perform_deliveries = true
+
+  # Action mailer gives OpenSSL::SSL::SSLError (hostname "mail.cloudcoin.global" does not match the server certificate)
+  # so we need to add openssl_verify_mode: 'none'
+  # http://batsov.com/articles/2012/12/06/dealing-with-ssl-certificate-validation-errors-in-rails/
+  # https://stackoverflow.com/questions/4505795/rails-3-opensslsslsslerror-hostname-was-not-match-with-the-server-certific
+  config.action_mailer.smtp_settings = {
+    address:              "mail.cloudcoin.global",
+    port:                 587,
+    domain:               'cloudcoin.global',
+    user_name:            Rails.application.credentials.mailer[:user_name],
+    password:             Rails.application.credentials.mailer[:password],
+    authentication:       'plain',
+    enable_starttls_auto: true,
+    openssl_verify_mode:  'none'
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
