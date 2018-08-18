@@ -82,7 +82,7 @@ class WelcomeController < ApplicationController
     
     uploaded_io_full_path = Rails.root.join('storage', 'upload', generated_file_name)
     # Eg. uploaded_io_full_path is 
-    # => #<Pathname:/home/dynamic/Desktop/workspace/bitshares-upload/public/uploads/201807051231401.CloudCoins.Counterfeit1.stack>
+    # => #<Pathname:/home/dynamic/Desktop/workspace/bitshares_upload/public/uploads/201807051231401.CloudCoins.Counterfeit1.stack>
 
     # Save the uploaded file to public/uploads
     File.open(uploaded_io_full_path, 'wb') do |file|

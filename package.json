@@ -1,5 +1,5 @@
 {
-  "name": "bitshares-upload",
+  "name": "bitshares_upload",
   "private": true,
   "dependencies": {}
 }
