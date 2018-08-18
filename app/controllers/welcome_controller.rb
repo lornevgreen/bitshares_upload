@@ -161,7 +161,7 @@ class WelcomeController < ApplicationController
   def withdraw_completed
     
     render :json => { status: "202",
-                            message: "Accepted. Email is being sent in the background" }
+                      message: "Accepted. Email is being sent in the background" }
   end
 
   # GET  /welcome/summary
