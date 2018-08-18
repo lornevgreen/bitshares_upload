@@ -7,7 +7,7 @@
 #             welcome_upload POST /welcome/upload(.:format)                                                                welcome#upload
 #           welcome_withdraw GET  /welcome/withdraw(.:format)                                                              welcome#withdraw
 # welcome_withdraw_completed GET  /welcome/withdraw_completed(.:format)                                                    welcome#withdraw_completed {:format=>"json"}
-#            welcome_summary GET  /welcome/summary(.:format)                                                               welcome#summary
+#            welcome_summary GET  /welcome/summary(.:format)                                                               welcome#summary {:format=>"json"}
 #         rails_service_blob GET  /rails/active_storage/blobs/:signed_id/*filename(.:format)                               active_storage/blobs#show
 #  rails_blob_representation GET  /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations#show
 #         rails_disk_service GET  /rails/active_storage/disk/:encoded_key/*filename(.:format)                              active_storage/disk#show
