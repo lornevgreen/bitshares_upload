@@ -1,2 +1,44 @@
-<h1>Deposit#completed</h1>
-<p>Find me in app/views/deposit/completed.html.erb</p>
+<section class="upload-bitshares">
+  <h1>Upload to Bitshares</h1>
+  <div class="steps">
+    Select Files | <b>Finished</b>
+  </div>
+  <% flash.each do |name, msg| -%>
+    <%= content_tag :div, msg, class: name %>
+  <% end -%>
+  <div class="table-container">
+    <table class="stack-file-data">
+      <tr class="tfield">
+        <td class="col1">Receipt ID</td>
+        <td class="col2"><%= @receipt_id %></td>
+      </tr>
+      <tr class="tfield">
+        <td class="col1">Time</td>
+        <td class="col2"><%= @checked_at %></td>
+      </tr>
+      <tr class="tfield">
+        <td class="col1">Authentic Coins</td>
+        <td class="col2"><%= @total_authentic %></td>
+      </tr>
+      <tr class="tfield">
+        <td class="col1">Fracked Coins</td>
+        <td class="col2"><%= @total_fracked %></td>
+      </tr>
+      <tr class="tfield">
+        <td class="col1">Counterfeit Coins</td>
+        <td class="col2"><%= @total_counterfeit %></td>
+      </tr>
+      <tr class="tfield">
+        <td class="col1">Lost Coins</td>
+        <td class="col2"><%= @total_lost %></td>
+      </tr>
+      <% @coins.each do |coin| %>
+        <tr class="tfield">
+          <td class="col1">Coin # <%= coin["sn"] %></td>
+          <td class="col2"><%= coin["status"] %></td>
+        </tr>
+      <% end %>
+    </table>
+  </div>
+  <div><%= link_to "Back", welcome_deposit_path, class: "btn" %></div>
+</section>

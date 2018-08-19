@@ -1,2 +1,30 @@
-<h1>Deposit#index</h1>
-<p>Find me in app/views/deposit/index.html.erb</p>
+<section class="upload-bitshares">
+  <h1>Upload to Bitshares</h1>
+  <div class="steps">
+    <b>Select Files</b> | Status
+  </div>
+  <% flash.each do |name, msg| -%>
+    <%= content_tag :div, msg, class: name %>
+  <% end -%>
+  <div class="form-container">
+    <%= form_tag({:action => "upload"}, {:multipart => true, :method => :post}) do %>
+      <div class="form-inner">
+        <div class="field">
+          <%= label_tag "email" %>
+          <%= text_field_tag "email" %>
+        </div>
+        <div class="field">
+          <%= label_tag "bitshares_account" %>
+          <%= text_field_tag "bitshares_account" %>
+        </div class="field">
+        <div class="field">
+          <%= label_tag "cloud_coin_file" %>
+          <%= file_field_tag 'cloud_coin_file' %>
+        </div>
+        <div class="field">
+          <%= submit_tag "Upload", class: "btn" %>
+        </div>
+      </div>      
+    <% end %>
+  </div>
+</section>
