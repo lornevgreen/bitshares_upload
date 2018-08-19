@@ -50,10 +50,12 @@ class WelcomeController < ApplicationController
   # POST /welcome/upload
   # No View
   def upload
+    # retrieve and validate params
+    
     # get account
     user_email = params["email"]
     # get bit shares account
-    user_bit_shares_account = params["bit_shares_account"]
+    user_bitshares_account = params["bitshares_account"]
     # get uploaded file
     uploaded_io = params["cloud_coin_file"]
 
@@ -94,6 +96,7 @@ class WelcomeController < ApplicationController
 
     # https://ruby-doc.org/stdlib-2.5.1/libdoc/net/http/rdoc/Net/HTTP.html
     # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
+    # https://github.com/CloudCoinConsortium/CloudBank-V2#deposit-service
     # We will be posting to the following URI
     uri = URI.parse("https://bank.cloudcoin.global/service/deposit_one_stack")
     
@@ -117,6 +120,8 @@ class WelcomeController < ApplicationController
       
       # get the status from the JSON response
       status = response_json["status"]
+
+      # TODO: check if status is NIL
       
       if (status == "error")
         # if the status is "error", redirect to deposit
@@ -202,6 +207,7 @@ class WelcomeController < ApplicationController
   # returns JSON
   def get_receipt_json(receipt_id, user_email)
     # Check Receipt using Get Receipt Service
+    # https://github.com/CloudCoinConsortium/CloudBank-V2#get-receipt-service
     uri = URI("https://bank.cloudcoin.global/service/get_receipt")
     params = { :rn => receipt_id, :account => "depository" }
     uri.query = URI.encode_www_form(params)
@@ -268,5 +274,14 @@ class WelcomeController < ApplicationController
     else
       return nil
     end
+  end
+
+  # TODO
+  def deposit_params
+    params.require(:deposit).permit(:email, :bitshares_account, :cloud_coin_file)
+  end
+
+  # TODO
+  def validate_params
   end
 end
