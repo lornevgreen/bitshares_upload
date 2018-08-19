@@ -19,15 +19,15 @@ Rails.application.routes.draw do
 	# the most popular route and should be matched first.
 	#  The priority goes from top to bottom. The last route in that file 
 	#  is at the lowest priority and will be applied last.
-	root :to => "welcome#deposit"
+	root :to => "deposit#index"
 	get 'deposit/index'
     get 'deposit/completed'
     post 'deposit/upload'
 
     get 'withdraw/index'
-    get 'withdraw/completed'
+    get 'withdraw/completed', defaults: {format: 'json'}
 
-    
+    # Old routes:
 	get 'welcome/deposit'
 	get 'welcome/deposit_completed'
 	post 'welcome/upload'
