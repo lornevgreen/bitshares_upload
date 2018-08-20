@@ -113,5 +113,77 @@ class DepositController < ApplicationController
 
   # GET  /deposit/completed
   def completed
+    # Get receipt and email from params
+    receipt_id = params["receipt"]
+    user_email = params["email"]
+
+    # Check if receipt and email params are blank
+    if receipt_id.blank? || user_email.blank?
+      redirect_to deposit_index_url, alert: "Something went wrong while checking the receipt. Please try again."
+      return
+    end
+
+    # get the JSON response from the Cloudcoin Get Receipt Service
+    response_json = get_receipt_json(receipt_id)
+
+    # Check if the response is blank
+    if response_json.blank?
+      # If the response is blank, redirect to deposit
+      redirect_to deposit_index_url, alert: "Something went wrong while checking the receipt. Please try again."
+      return
+    end
+
+    # get the status of the receipt
+    status = response_json["status"]
+    
+    # If the status is fail...
+    if (status == "fail")
+      # Redirect to deposit
+      redirect_to deposit_index_url, alert: response_json["message"]
+      return
+    end
+    
+    # status is not fail...
+    # Extract data from JSON
+    @receipt_id = response_json["receipt_id"]
+    @checked_at = response_json["time"]
+    @total_authentic = response_json["total_authentic"]
+    @total_fracked = response_json["total_fracked"]
+    @total_counterfeit = response_json["total_counterfeit"]
+    @total_lost = response_json["total_lost"]
+    @coins = response_json["receipt"].compact
+  end
+
+
+  private
+
+  # Contacts Cloudcoin Get Receipt Service to receive the full receipt
+  # https://github.com/CloudCoinConsortium/CloudBank-V2#get-receipt-service
+  # GET https://bank.cloudcoin.global/service/get_receipt?rn=receipt_id&account=user_email
+  # returns nil when server does not respond or 
+  # returns JSON
+  def get_receipt_json(receipt_id)
+    # Check Receipt using Get Receipt Service
+    # https://github.com/CloudCoinConsortium/CloudBank-V2#get-receipt-service
+    uri = URI("https://bank.cloudcoin.global/service/get_receipt")
+    params = { :rn => receipt_id, :account => Rails.application.credentials.cloudcoin[:account] }
+    uri.query = URI.encode_www_form(params)
+
+    # Response
+    res = ""
+    Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
+      req = Net::HTTP::Get.new(uri)
+      res = http.request(req) # Net::HTTPResponse object
+      # res.code should be 200
+    end
+
+    # res.code should be 200
+    if (res.is_a?(Net::HTTPSuccess))
+      # Receive the JSON response and parse it
+      response_json = JSON.parse(res.body)
+      return response_json
+    else
+      return nil
+    end
   end
 end
