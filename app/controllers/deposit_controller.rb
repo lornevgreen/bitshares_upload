@@ -1,41 +1,33 @@
 require 'net/http'
 class DepositController < ApplicationController
+  before_action :set_email, only: [:upload]
+  before_action :set_bitshares_account, only: [:upload]
+  before_action :set_uploaded_io, only: [:upload]
+
   # GET  /deposit/index
   def index
   end
 
   # POST /deposit/upload
   # No View
+  # - Validates fields submitted via form
+  # - Saves uploaded file on disk to /storage/upload 
+  # - Sends file to online depository via deposit one stack
+  # - Gets a receipt id from deposit one stack service
+  # - Gets full receipt from get receipt service
+  # - Calculates value of uploaded cloud coins
+  # - Calls the Issue bitshares service with the account name and amount
+  # - Sends an email
+  # - If everything is successful redirects to completed
   def upload
     # retrieve and validate params    
-    # get account
-    user_email = params["email"]
-    # get bit shares account
-    user_bitshares_account = params["bitshares_account"]
-    # get uploaded file
-    uploaded_io = params["cloud_coin_file"]
+   
 
-    # check if there was no email entered
-    if user_email.blank?
-      redirect_to deposit_index_url, alert: "Email is missing. Please try again."
-      return
-    elsif user_email.match(URI::MailTo::EMAIL_REGEXP).present? == false
-      # check if the email is in valid format
-      redirect_to deposit_index_url, alert: "Email is of invalid format. Please try again."
-      return
-    end
+    
 
-    # check if there was no bitshares account entered
-    if user_bitshares_account.blank?
-      redirect_to deposit_index_url, alert: "Bitshares account is missing. Please try again."
-      return
-    end
+    
 
-    # check if there was no file selected
-    if uploaded_io.blank?
-      redirect_to deposit_index_url, alert: "Stack file is missing. Please try again."
-      return
-    end
+    
 
     # TODO: Generate a more secure filename
     # Generate a file name that will be unique YYYYMMSSuploadedfile.stack
@@ -153,6 +145,8 @@ class DepositController < ApplicationController
     @total_lost = response_json["total_lost"]
     @coins = response_json["receipt"].compact
     @total_authentic_coins_value = get_authentic_coins_value(response_json)
+
+
   end
 
 
@@ -206,11 +200,44 @@ class DepositController < ApplicationController
         when 2097153..4194304 then total_value += 5
         when 4194305..6291456 then total_value += 25
         when 6291457..14680064 then total_value += 100
-        when 14680065..16777217 then total_value += 255
+        when 14680065..16777217 then total_value += 250
         end
       end
     end
 
     return total_value
   end
+
+  def set_email
+    @email = params[:email]
+    # check if there was no email entered
+    if @email.blank?
+      redirect_to deposit_index_url, alert: "Email is missing. Please try again."
+      return
+    elsif @email.match(URI::MailTo::EMAIL_REGEXP).present? == false
+      # check if the email is in valid format
+      redirect_to deposit_index_url, alert: "Email is of invalid format. Please try again."
+      return
+    end
+  end
+  def set_bitshares_account
+    @bitshares_account = params[:bitshares_account]
+    # check if there was no bitshares account entered
+    if @bitshares_account.blank?
+      redirect_to deposit_index_url, alert: "Bitshares account is missing. Please try again."
+      return
+    end
+  end
+  def set_uploaded_io
+    @uploaded_io = params[:cloud_coin_file]
+    # check if there was no file selected
+    if @uploaded_io.blank?
+      redirect_to deposit_index_url, alert: "Stack file is missing. Please try again."
+      return
+    end
+  end
+  def deposit_params    
+    # params.require(:deposit).permit(:email, :bitshares_account, :cloud_coin_file)
+  end
+
 end
