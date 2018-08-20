@@ -13,6 +13,7 @@ class DepositController < ApplicationController
   # - Validates fields submitted via form
   # - Saves uploaded file on disk to /storage/upload 
   # - Sends file to online depository via deposit one stack
+  # - Removes file from local disk
   # - Gets a receipt id from deposit one stack service
   # - Gets full receipt from get receipt service
   # - Calculates value of uploaded cloud coins
@@ -20,87 +21,31 @@ class DepositController < ApplicationController
   # - Sends an email
   # - If everything is successful redirects to completed
   def upload
-    # retrieve and validate params    
-   
-
+    # Validations of params should have been done before this action started
     
-
-    
-
-    
-
-    # TODO: Generate a more secure filename
-    # Generate a file name that will be unique YYYYMMSSuploadedfile.stack
-    # Eg. 20180819163736_cc1.stack
-    generated_file_name = Time.now.strftime("%Y%m%d%H%M%S") + "_" + uploaded_io.original_filename
-
-    # TODO: check if the file already exists
-    
-    uploaded_io_full_path = Rails.root.join('storage', 'upload', generated_file_name)
-    # Eg. uploaded_io_full_path is 
-    # => #<Pathname:/home/dynamic/Desktop/workspace/bitshares_upload/public/uploads/20180819163736_cc1.stack>
-
-    # Save the uploaded file to public/uploads
-    File.open(uploaded_io_full_path, 'wb') do |file|
-      file.write(uploaded_io.read)
-    end
+    # Save uploaded file on disk to /storage/upload 
+    uploaded_io_full_path = save_stack_file(@uploaded_io)
     
     # Get the file content
     uploaded_io_content = File.read(uploaded_io_full_path)
 
-    # https://ruby-doc.org/stdlib-2.5.1/libdoc/net/http/rdoc/Net/HTTP.html
-    # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
-    # https://github.com/CloudCoinConsortium/CloudBank-V2#deposit-service
-    # We will be posting to the following URI
-    uri = URI.parse("https://bank.cloudcoin.global/service/deposit_one_stack")
+    # Send file to online depository via deposit one stack
+    # and get the receipt id
+    receipt_id = send_to_depository(uploaded_io_content)
+
+    # Remove the file from local disk
+    FileUtils.remove_file(uploaded_io_full_path, force: true)
+
+    # Get full receipt from get receipt service
+    full_receipt = get_receipt_json(receipt_id)
+
+    # Calculate value of uploaded cloud coins
+    authentic_coins_value = get_authentic_coins_value(full_receipt)
+
+    # Call the Issue bitshares service with the account name and amount
+    send_to_bitshares(@bitshares_account, authentic_coins_value)
+
     
-    # Response
-    res = ""
-
-    Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
-      req = Net::HTTP::Post.new(uri)
-      req.set_form_data(account: Rails.application.credentials.cloudcoin[:account], 
-                        stack: uploaded_io_content)
-      res = http.request(req)
-      # res.code should be 200
-    end
-
-    if (res.is_a?(Net::HTTPSuccess))
-      # if cloudcoin deposit one stack service was able to
-      # process the request
-      # 
-      # Parse the JSON response
-      response_json = JSON.parse(res.body)
-      
-      # get the status from the JSON response
-      status = response_json["status"]
-
-      # TODO: check if status is NIL
-      
-      if (status == "error")
-        # if the status is "error", redirect to deposit
-        error_msg = response_json["message"]
-        error_msg = "The uploaded file was not a valid stack file or there was an unknown error."
-        # remove the uploaded file
-        FileUtils.remove_file(uploaded_io_full_path, force: true)
-        redirect_to deposit_index_url, alert: error_msg
-        return
-      else
-        # status should be "importing"
-        # get the receipt id from the response and redirect to deposit_completed
-        receipt_id = response_json["receipt"]
-        flash[:notice] = "Your authentic coins will be uploaded to Bitshares shortly. We will send you an email notification to " + user_email
-        # remove the uploaded file
-        FileUtils.remove_file(uploaded_io_full_path, force: true)
-        redirect_to controller: "deposit", action: "completed", receipt: receipt_id, email: user_email
-        return
-      end
-    else
-      # if uploaded file is NOT a cloudcoin stack file
-      # remove the uploaded file
-      FileUtils.remove_file(uploaded_io_full_path, force: true)
-      redirect_to deposit_index_url, alert: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
-    end
   end
 
   # GET  /deposit/completed
@@ -152,61 +97,9 @@ class DepositController < ApplicationController
 
   private
 
-  # Contacts Cloudcoin Get Receipt Service to receive the full receipt
-  # https://github.com/CloudCoinConsortium/CloudBank-V2#get-receipt-service
-  # GET https://bank.cloudcoin.global/service/get_receipt?rn=receipt_id&account=user_email
-  # returns nil when server does not respond or 
-  # returns JSON
-  def get_receipt_json(receipt_id)
-    # Check Receipt using Get Receipt Service
-    # https://github.com/CloudCoinConsortium/CloudBank-V2#get-receipt-service
-    uri = URI("https://bank.cloudcoin.global/service/get_receipt")
-    params = { :rn => receipt_id, :account => Rails.application.credentials.cloudcoin[:account] }
-    uri.query = URI.encode_www_form(params)
+  
 
-    # Response
-    res = ""
-    Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
-      req = Net::HTTP::Get.new(uri)
-      res = http.request(req) # Net::HTTPResponse object
-      # res.code should be 200
-    end
-
-    # res.code should be 200
-    if (res.is_a?(Net::HTTPSuccess))
-      # Receive the JSON response and parse it
-      response_json = JSON.parse(res.body)
-      return response_json
-    else
-      return nil
-    end
-  end
-
-  # Returns the total value of all the authentic coins
-  # It iterates through the coins returned by get receipt service
-  def get_authentic_coins_value(receipt_json)
-    if receipt_json.blank? || receipt_json["receipt_detail"].blank?
-      return 0
-    end
-
-    total_value = 0
-    receipt_json["receipt_detail"].each do |coin|
-      if coin["status"] == "authentic"
-        # get serial number
-        serial_no = coin["nn.sn"].split('.').last.to_i
-
-        case serial_no
-        when 1..2097152 then total_value += 1
-        when 2097153..4194304 then total_value += 5
-        when 4194305..6291456 then total_value += 25
-        when 6291457..14680064 then total_value += 100
-        when 14680065..16777217 then total_value += 250
-        end
-      end
-    end
-
-    return total_value
-  end
+  
 
   def set_email
     @email = params[:email]
@@ -240,4 +133,139 @@ class DepositController < ApplicationController
     # params.require(:deposit).permit(:email, :bitshares_account, :cloud_coin_file)
   end
 
+  def save_stack_file(uploaded_io)
+    # TODO: Generate a more secure filename
+    # Generate a file name that will be unique YYYYMMSSuploadedfile.stack
+    # Eg. 20180819163736_cc1.stack
+    generated_file_name = Time.now.strftime("%Y%m%d%H%M%S") + "_" + uploaded_io.original_filename
+
+    # TODO: check if the file already exists
+    
+    uploaded_io_full_path = Rails.root.join('storage', 'upload', generated_file_name)
+    # Eg. uploaded_io_full_path is 
+    # => #<Pathname:/home/dynamic/Desktop/workspace/bitshares_upload/public/uploads/20180819163736_cc1.stack>
+
+    # Save the uploaded file to public/uploads
+    File.open(uploaded_io_full_path, 'wb') do |file|
+      file.write(uploaded_io.read)
+    end
+
+    return uploaded_io_full_path
+  end
+
+  def send_to_depository(uploaded_io_content)
+    # https://ruby-doc.org/stdlib-2.5.1/libdoc/net/http/rdoc/Net/HTTP.html
+    # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
+    # https://github.com/CloudCoinConsortium/CloudBank-V2#deposit-service
+    # We will be posting to the following URI
+    uri = URI.parse("https://bank.cloudcoin.global/service/deposit_one_stack")
+    
+    # Response
+    res = ""
+
+    Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
+      req = Net::HTTP::Post.new(uri)
+      req.set_form_data(account: Rails.application.credentials.cloudcoin[:account], 
+                        stack: uploaded_io_content)
+      res = http.request(req)
+      # res.code should be 200
+    end
+
+    if (res.is_a?(Net::HTTPSuccess))
+      # if cloudcoin deposit one stack service was able to
+      # process the request
+      # 
+      # Parse the JSON response
+      response_json = JSON.parse(res.body)
+      
+      # get the status from the JSON response
+      status = response_json["status"]
+
+      # TODO: check if status is NIL
+      
+      if (status == "error")
+        # if the status is "error", redirect to deposit
+        error_msg = response_json["message"]
+        error_msg = "The uploaded file was not a valid stack file or there was an unknown error."
+        # remove the uploaded file
+        FileUtils.remove_file(uploaded_io_full_path, force: true)
+        redirect_to deposit_index_url, alert: error_msg
+        return
+      else
+        # status should be "importing"
+        # get the receipt id from the response and redirect to deposit_completed
+        receipt_id = response_json["receipt"]
+        # flash[:notice] = "Your authentic coins will be uploaded to Bitshares shortly. We will send you an email notification to " + user_email
+        # redirect_to controller: "deposit", action: "completed", receipt: receipt_id, email: user_email
+        return receipt_id
+      end
+    else
+      # if uploaded file is NOT a cloudcoin stack file
+      # remove the uploaded file
+      FileUtils.remove_file(uploaded_io_full_path, force: true)
+      redirect_to deposit_index_url, alert: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+    end
+  end
+
+  # Contacts Cloudcoin Get Receipt Service to receive the full receipt
+  # https://github.com/CloudCoinConsortium/CloudBank-V2#get-receipt-service
+  # GET https://bank.cloudcoin.global/service/get_receipt?rn=receipt_id&account=user_email
+  # returns nil when server does not respond or 
+  # returns JSON
+  def get_receipt_json(receipt_id)
+    # Check Receipt using Get Receipt Service
+    # https://github.com/CloudCoinConsortium/CloudBank-V2#get-receipt-service
+    uri = URI("https://bank.cloudcoin.global/service/get_receipt")
+    params = { :rn => receipt_id, :account => Rails.application.credentials.cloudcoin[:account] }
+    uri.query = URI.encode_www_form(params)
+
+    # Response
+    res = ""
+    Net::HTTP.start(uri.host, uri.port, :use_ssl => true) do |http|
+      req = Net::HTTP::Get.new(uri)
+      res = http.request(req) # Net::HTTPResponse object
+      # res.code should be 200
+    end
+
+    # res.code should be 200
+    if (res.is_a?(Net::HTTPSuccess))
+      # Receive the JSON response and parse it
+      response_json = JSON.parse(res.body)
+      return response_json
+    else
+      # TODO redirect to deposit index
+      redirect_to deposit_index_url, alert: "Did not get a valid response from the get receipt service."
+      return nil
+    end
+  end
+
+  # Returns the total value of all the authentic coins
+  # It iterates through the coins returned by get receipt service
+  def get_authentic_coins_value(receipt_json)
+    if receipt_json.blank? || receipt_json["receipt_detail"].blank?
+      return 0
+    end
+
+    total_value = 0
+    receipt_json["receipt_detail"].each do |coin|
+      if coin["status"] == "authentic"
+        # get serial number
+        serial_no = coin["nn.sn"].split('.').last.to_i
+
+        case serial_no
+        when 1..2097152 then total_value += 1
+        when 2097153..4194304 then total_value += 5
+        when 4194305..6291456 then total_value += 25
+        when 6291457..14680064 then total_value += 100
+        when 14680065..16777217 then total_value += 250
+        end
+      end
+    end
+
+    return total_value
+  end
+
+  def send_to_bitshares(account, value)
+    
+  end
 end
