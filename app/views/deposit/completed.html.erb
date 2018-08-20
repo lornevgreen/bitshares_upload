@@ -17,6 +17,10 @@
         <td class="col2"><%= @checked_at %></td>
       </tr>
       <tr class="tfield">
+        <td class="col1"><b>Total Value</b></td>
+        <td class="col2"><b><%= @total_authentic_coins_value %></b></td>
+      </tr>
+      <tr class="tfield">
         <td class="col1">Authentic Coins</td>
         <td class="col2"><%= @total_authentic %></td>
       </tr>
@@ -40,5 +44,5 @@
       <% end %>
     </table>
   </div>
-  <div><%= link_to "Back", welcome_deposit_path, class: "btn" %></div>
+  <div><%= link_to "Back", deposit_index_path, class: "btn" %></div>
 </section>
