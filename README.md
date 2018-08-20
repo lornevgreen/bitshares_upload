@@ -1,4 +1,4 @@
-# README
+# BITSHARES UPLOAD
 
 Deposit
 - Send .stack file to depository
@@ -10,20 +10,15 @@ Withdraw
 - Message to CloudBank
 - Send .stack to end user
 
-## TODO
-
-## VERSIONS
+## Configuration and System Dependencies
+- Ubuntu 16.04 LTS
 - ruby 2.5.1p57 (2018-03-29 revision 63029) [x86_64-linux]
-- Rails 5.2.0
-
-## SYSTEM DEPENDENCIES
-
-## CONFIGURATION
+- Rails 5.2.1
 - Create directories:
 	- /storage/upload
 	- /storage/download
 
-## CLOUDCOIN SERVICES
+## CloudCoin Services Reference
 
 Print Welcome:
 ```GET https://bank.cloudcoin.global/service/print_welcome```
@@ -63,16 +58,19 @@ Get Receipt Service:
 Show Coins: 
 ```GET https://bank.cloudcoin.global/service/show_coins?pk=00000000000000000000000000000000&account=CloudCoin@Protonmail.com```
 
-## LINKS
+## Connet to Server
+- Shortcuts to SSH clients - https://askubuntu.com/questions/754450/shortcuts-to-ssh-clients
+- How To Configure SSH Key-Based Authentication on a Linux Server - https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server
 
-## DATABASE CREATION
+## Deployment Instructions
+- Setup Ruby On Rails on Ubuntu 16.04 - https://gorails.com/setup/ubuntu/16.04
+- Installing Passenger + Nginx on Ubuntu 16.04 LTS - https://www.phusionpassenger.com/library/install/nginx/install/oss/xenial/
+- Deploying a Ruby app on a Linux/Unix production server - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/xenial/deploy_app.html
+- Deploying application updates - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/deploy_updates.html
 
-## DEPLOYMENT INSTRUCTIONS
-https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/deploy_updates.html
-
-## REFERENCES
+## References
 - https://ruby-doc.org/stdlib-2.5.1/libdoc/net/http/rdoc/Net/HTTP.html
-- https://github.com/CloudCoinConsortium/CloudBank-V2
+- Cloud Bank: https://github.com/CloudCoinConsortium/CloudBank-V2
 - Credentials: https://medium.com/cedarcode/rails-5-2-credentials-9b3324851336
 - Benchmark: https://stackoverflow.com/questions/11406410/measure-time-in-ruby
 - Ruby Style Guide: https://github.com/airbnb/ruby
@@ -80,7 +78,7 @@ https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/ngin
 	- https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#code
 	- https://guides.github.com/features/mastering-markdown/
 
-# STEPS TO GET ON BITSHARES
+## Steps to get on Bitshares
 
 1. Setup your own Testnet Delayed Node
 2. Testnet Bitshares Watcher (staggered orders that will be collected from your uploads)
@@ -93,7 +91,7 @@ on other side - Ropsten Testnet ETH node + watcher + script
 **Library:** [link](https://github.com/TrustyFund/vuex-bitshares "https://github.com/TrustyFund/vuex-bitshares")
 
 
-# STAGING SERVER
+## Staging Server
 
 Get a VPS from Digital Ocean with the config: 8 GB Memory / 160 GB Disk / Debian 8.10 x64
 
@@ -156,5 +154,5 @@ Running Witness Node using screen
 $ screen -r cctestnet
 ```
 
-## REFERENCES
+## References
 - https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-16-04
