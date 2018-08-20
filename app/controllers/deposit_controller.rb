@@ -152,6 +152,7 @@ class DepositController < ApplicationController
     @total_counterfeit = response_json["total_counterfeit"]
     @total_lost = response_json["total_lost"]
     @coins = response_json["receipt"].compact
+    @total_authentic_coins_value = get_authentic_coins_value(response_json)
   end
 
 
@@ -185,5 +186,31 @@ class DepositController < ApplicationController
     else
       return nil
     end
+  end
+
+  # Returns the total value of all the authentic coins
+  # It iterates through the coins returned by get receipt service
+  def get_authentic_coins_value(receipt_json)
+    if receipt_json.blank? || receipt_json["receipt_detail"].blank?
+      return 0
+    end
+
+    total_value = 0
+    receipt_json["receipt_detail"].each do |coin|
+      if coin["status"] == "authentic"
+        # get serial number
+        serial_no = coin["nn.sn"].split('.').last.to_i
+
+        case serial_no
+        when 1..2097152 then total_value += 1
+        when 2097153..4194304 then total_value += 5
+        when 4194305..6291456 then total_value += 25
+        when 6291457..14680064 then total_value += 100
+        when 14680065..16777217 then total_value += 255
+        end
+      end
+    end
+
+    return total_value
   end
 end
