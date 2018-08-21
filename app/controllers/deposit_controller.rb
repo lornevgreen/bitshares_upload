@@ -38,6 +38,8 @@ class DepositController < ApplicationController
     # Remove the file from local disk
     FileUtils.remove_file(uploaded_io_full_path, force: true)
 
+    return if receipt_id.blank?
+
     # Get full receipt from get receipt service
     full_receipt = get_receipt_json(receipt_id)
 
@@ -53,7 +55,7 @@ class DepositController < ApplicationController
     if deposit_amount == 0
       flash[:alert] = "Nothing to transfer"
     else
-      flash[:notice] = "Your coins will be transferred to bitshares"
+      flash[:notice] = "Your coins will be transferred to bitshares. An email has been sent to #{@email} for your records."
     end
     redirect_to controller: :deposit,
       action: :completed, 
@@ -189,8 +191,6 @@ class DepositController < ApplicationController
         # if the status is "error", redirect to deposit
         error_msg = response_json["message"]
         error_msg = "The uploaded file was not a valid stack file or there was an unknown error."
-        # remove the uploaded file
-        FileUtils.remove_file(uploaded_io_full_path, force: true)
         redirect_to deposit_index_url, alert: error_msg
         return
       else
@@ -203,9 +203,8 @@ class DepositController < ApplicationController
       end
     else
       # if uploaded file is NOT a cloudcoin stack file
-      # remove the uploaded file
-      FileUtils.remove_file(uploaded_io_full_path, force: true)
       redirect_to deposit_index_url, alert: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+      return
     end
   end
 
