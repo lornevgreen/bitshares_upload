@@ -50,10 +50,16 @@ class DepositController < ApplicationController
     # Send an email to the user
     NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
 
-    redirect_to deposit_completed_url, 
-      notice: "Your coins will be transferred to bitshares", 
+    if deposit_amount == 0
+      flash[:alert] = "Nothing to transfer"
+    else
+      flash[:notice] = "Your coins will be transferred to bitshares"
+    end
+    redirect_to controller: :deposit,
+      action: :completed, 
       receipt_id: receipt_id,
-      email: @email
+      email: @email,
+      bitshares_account: @bitshares_account
     
   end
 
