@@ -10,6 +10,9 @@ Withdraw
 - Message to CloudBank
 - Send .stack to end user
 
+## IP Address
+13.232.170.28
+
 ## Configuration and System Dependencies
 - Ubuntu 16.04 LTS
 - ruby 2.5.1p57 (2018-03-29 revision 63029) [x86_64-linux]
@@ -17,6 +20,9 @@ Withdraw
 - Create directories:
 	- /storage/upload
 	- /storage/download
+
+## Paths
+/ or /deposit - Upload Files
 
 ## CloudCoin Services Reference
 
@@ -70,6 +76,7 @@ Show Coins:
 
 ## References
 - https://ruby-doc.org/stdlib-2.5.1/libdoc/net/http/rdoc/Net/HTTP.html
+- Gem Permissions Fix: https://stackoverflow.com/a/37842339/1553074
 - Cloud Bank: https://github.com/CloudCoinConsortium/CloudBank-V2
 - Credentials: https://medium.com/cedarcode/rails-5-2-credentials-9b3324851336
 - Benchmark: https://stackoverflow.com/questions/11406410/measure-time-in-ruby
