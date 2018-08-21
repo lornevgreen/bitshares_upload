@@ -40,11 +40,15 @@ class DepositController < ApplicationController
     full_receipt = get_receipt_json(receipt_id)
 
     # Calculate value of uploaded cloud coins
-    authentic_coins_value = get_authentic_coins_value(full_receipt)
+    deposit_amount = get_authentic_coins_value(full_receipt)
 
     # Call the Issue bitshares service with the account name and amount
-    send_to_bitshares(@bitshares_account, authentic_coins_value)
+    send_to_bitshares(@bitshares_account, deposit_amount)
 
+    # Send an email to the user
+    NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
+
+    redirect_to deposit_completed_url, notice: "Your coins will be transferred to bitshares"
     
   end
 
