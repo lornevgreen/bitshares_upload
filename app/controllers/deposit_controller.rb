@@ -1,8 +1,10 @@
 require 'net/http'
 class DepositController < ApplicationController
-  before_action :set_email, only: [:upload]
-  before_action :set_bitshares_account, only: [:upload]
+  before_action :set_email, only: [:upload, :completed]
+  before_action :set_bitshares_account, only: [:upload, :completed]
   before_action :set_uploaded_io, only: [:upload]
+
+  before_action :set_receipt_id, only: [:completed]
 
   # GET  /deposit/index
   def index
@@ -48,24 +50,18 @@ class DepositController < ApplicationController
     # Send an email to the user
     NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
 
-    redirect_to deposit_completed_url, notice: "Your coins will be transferred to bitshares"
+    redirect_to deposit_completed_url, 
+      notice: "Your coins will be transferred to bitshares", 
+      receipt_id: receipt_id,
+      email: @email
     
   end
 
   # GET  /deposit/completed
   def completed
-    # Get receipt and email from params
-    receipt_id = params["receipt"]
-    user_email = params["email"]
-
-    # Check if receipt and email params are blank
-    if receipt_id.blank? || user_email.blank?
-      redirect_to deposit_index_url, alert: "Something went wrong while checking the receipt. Please try again."
-      return
-    end
-
+    # Validations of params should have been done before this action started
     # get the JSON response from the Cloudcoin Get Receipt Service
-    response_json = get_receipt_json(receipt_id)
+    response_json = get_receipt_json(@receipt_id)
 
     # Check if the response is blank
     if response_json.blank?
@@ -94,27 +90,19 @@ class DepositController < ApplicationController
     @total_lost = response_json["total_lost"]
     @coins = response_json["receipt"].compact
     @total_authentic_coins_value = get_authentic_coins_value(response_json)
-
-
   end
 
 
   private
-
-  
-
-  
 
   def set_email
     @email = params[:email]
     # check if there was no email entered
     if @email.blank?
       redirect_to deposit_index_url, alert: "Email is missing. Please try again."
-      return
     elsif @email.match(URI::MailTo::EMAIL_REGEXP).present? == false
       # check if the email is in valid format
       redirect_to deposit_index_url, alert: "Email is of invalid format. Please try again."
-      return
     end
   end
   def set_bitshares_account
@@ -122,7 +110,6 @@ class DepositController < ApplicationController
     # check if there was no bitshares account entered
     if @bitshares_account.blank?
       redirect_to deposit_index_url, alert: "Bitshares account is missing. Please try again."
-      return
     end
   end
   def set_uploaded_io
@@ -130,7 +117,12 @@ class DepositController < ApplicationController
     # check if there was no file selected
     if @uploaded_io.blank?
       redirect_to deposit_index_url, alert: "Stack file is missing. Please try again."
-      return
+    end
+  end
+  def set_receipt_id
+    @receipt_id = params[:receipt_id]
+    if @receipt_id.blank?
+      redirect_to deposit_index_url, alert: "Receipt ID is blank. Please try again."
     end
   end
   def deposit_params    
