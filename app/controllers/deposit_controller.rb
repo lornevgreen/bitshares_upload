@@ -38,6 +38,8 @@ class DepositController < ApplicationController
     # Remove the file from local disk
     FileUtils.remove_file(uploaded_io_full_path, force: true)
 
+    # Do not proceed if receipt id is blank.
+    # redirect_to called in send_to_depository
     return if receipt_id.blank?
 
     # Get full receipt from get receipt service
