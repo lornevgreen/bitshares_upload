@@ -266,27 +266,26 @@ class DepositController < ApplicationController
   end
 
   def send_to_bitshares(account, amount)
-    uri = URI("https://73.151.23.115/issue_bitshares.php")
+    # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
+    
+    uri = URI.parse("https://73.151.23.115/issue_bitshares.php")
     params = { :amount => amount, :account => account }
     uri.query = URI.encode_www_form(params)
+    http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
+    # TODO: remove when valid SSL cetificate is installed
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
 
-    # Response
-    res = ""
-    Net::HTTP.start(uri.host, uri.port, :use_ssl => true, ssl_verify_mode: OpenSSL::SSL::VERIFY_NONE) do |http|
-      req = Net::HTTP::Get.new(uri)
-      res = http.request(req) # Net::HTTPResponse object
-      # res.code should be 200
-    end
-    # res.code should be 200
-    if (res.is_a?(Net::HTTPSuccess))
-      # Receive the JSON response and parse it
-      asdf
-      response_json = JSON.parse(res.body)
-      return response_json
+    request = Net::HTTP::Get.new(uri.request_uri)
+
+    response = http.request(request)
+    # response.body
+    # response.status
+    if (response.code == "200")
+      return true
     else
-      # TODO redirect to deposit index
       redirect_to deposit_index_url, alert: "Invalid response from the Issue Bitshares service."
-      return nil
+      return false
     end
   end
 end
