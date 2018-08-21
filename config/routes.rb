@@ -1,7 +1,12 @@
 # == Route Map
 #
 #                     Prefix Verb URI Pattern                                                                              Controller#Action
-#                       root GET  /                                                                                        welcome#deposit
+#                       root GET  /                                                                                        deposit#index
+#              deposit_index GET  /deposit/index(.:format)                                                                 deposit#index
+#          deposit_completed GET  /deposit/completed(.:format)                                                             deposit#completed
+#             deposit_upload POST /deposit/upload(.:format)                                                                deposit#upload
+#             withdraw_index GET  /withdraw/index(.:format)                                                                withdraw#index
+#         withdraw_completed GET  /withdraw/completed(.:format)                                                            withdraw#completed {:format=>"json"}
 #            welcome_deposit GET  /welcome/deposit(.:format)                                                               welcome#deposit
 #  welcome_deposit_completed GET  /welcome/deposit_completed(.:format)                                                     welcome#deposit_completed
 #             welcome_upload POST /welcome/upload(.:format)                                                                welcome#upload
@@ -19,7 +24,7 @@ Rails.application.routes.draw do
 	# the most popular route and should be matched first.
 	#  The priority goes from top to bottom. The last route in that file 
 	#  is at the lowest priority and will be applied last.
-	root :to => "deposit#index"
+	root to: 'deposit#index'
 	get 'deposit/index'
     get 'deposit/completed'
     post 'deposit/upload'
@@ -28,12 +33,12 @@ Rails.application.routes.draw do
     get 'withdraw/completed', defaults: {format: 'json'}
 
     # Old routes:
-	get 'welcome/deposit'
-	get 'welcome/deposit_completed'
-	post 'welcome/upload'
+	# get 'welcome/deposit'
+	# get 'welcome/deposit_completed'
+	# post 'welcome/upload'
 
-	get 'welcome/withdraw'
-	get 'welcome/withdraw_completed', defaults: {format: 'json'}
+	# get 'welcome/withdraw'
+	# get 'welcome/withdraw_completed', defaults: {format: 'json'}
 
 	get 'welcome/summary', defaults: {format: 'json'}
   
