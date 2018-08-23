@@ -35,8 +35,6 @@ class DepositController < ApplicationController
     # and get the receipt id
     receipt_id = send_to_depository(uploaded_io_content)
 
-    receipt_id = "df68d61c5afaf7a4ed3a1d0006c9d5e5"
-
     # Remove the file from local disk
     FileUtils.remove_file(uploaded_io_full_path, force: true)
 
@@ -49,7 +47,6 @@ class DepositController < ApplicationController
 
     # Calculate value of uploaded cloud coins
     deposit_amount = get_authentic_coins_value(full_receipt)
-    asdf
 
     # Call the Issue bitshares service with the account name and amount
     send_to_bitshares(@bitshares_account, deposit_amount)
@@ -254,6 +251,9 @@ class DepositController < ApplicationController
 
     total_value = 0
     receipt_json["receipt"].each do |coin|
+      if coin.blank?
+        return 0
+      end
       if coin["status"] == "authentic"
         # get serial number
         serial_no = coin["sn"]
