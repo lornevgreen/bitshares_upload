@@ -64,7 +64,7 @@ Get Receipt Service:
 Show Coins: 
 ```GET https://bank.cloudcoin.global/service/show_coins?pk=00000000000000000000000000000000&account=CloudCoin@Protonmail.com```
 
-## Connet to Server
+## How to Connet to Your Remote Server?
 - Shortcuts to SSH clients - https://askubuntu.com/questions/754450/shortcuts-to-ssh-clients
 - How To Configure SSH Key-Based Authentication on a Linux Server - https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server
 
@@ -92,7 +92,7 @@ Show Coins:
 	- https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#code
 	- https://guides.github.com/features/mastering-markdown/
 
-## Steps to get on Bitshares
+## Steps to get on Bitshares (No Longer Used)
 
 1. Setup your own Testnet Delayed Node
 2. Testnet Bitshares Watcher (staggered orders that will be collected from your uploads)
