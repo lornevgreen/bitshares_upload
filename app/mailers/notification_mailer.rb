@@ -12,6 +12,7 @@ class NotificationMailer < ApplicationMailer
   # @param  file_path         filepath of the stack file  
   def download_email(email, file_path, withdraw_amount)
     @withdraw_amount = withdraw_amount
+    @email = email
     attachments["cc" + withdraw_amount.to_s + ".stack"] = File.read(file_path)
     mail(to: email, subject: "Your Cloudcoins Can Be Downloaded")
   end
