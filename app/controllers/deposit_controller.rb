@@ -52,7 +52,9 @@ class DepositController < ApplicationController
     send_to_bitshares(@bitshares_account, deposit_amount)
 
     # Send an email to the user
-    NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
+    if deposit_amount > 0
+      NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
+    end
 
     if deposit_amount == 0
       flash[:alert] = "Nothing to transfer"
