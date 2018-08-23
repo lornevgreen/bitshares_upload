@@ -75,6 +75,13 @@ Show Coins:
 - Deploying application updates - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/deploy_updates.html
 
 ## References
+- DKIM: 
+	- https://www.stefanwienert.de/blog/2013/06/20/send-bulk-e-mails-safely-with-spf-and-dkim-with-rails/
+	- https://github.com/tomas/tuktuk
+	- https://help.campaignmonitor.com/manage-your-own-authentication
+	- https://www.sparkpost.com/blog/dkim-validation/
+	- https://docs.aws.amazon.com/ses/latest/DeveloperGuide/dkim.html
+	- https://shapeshed.com/getting-email-through-spam-filters-from-a-rails-app/
 - https://ruby-doc.org/stdlib-2.5.1/libdoc/net/http/rdoc/Net/HTTP.html
 - Gem Permissions Fix: https://stackoverflow.com/a/37842339/1553074
 - Cloud Bank: https://github.com/CloudCoinConsortium/CloudBank-V2
