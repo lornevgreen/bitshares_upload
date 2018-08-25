@@ -40,7 +40,10 @@ class DepositController < ApplicationController
 
     # Do not proceed if receipt id is blank.
     # redirect_to called in send_to_depository
-    return if receipt_id.blank?
+    if receipt_id.blank?
+      logger.warn {"Receipt ID is blank"}
+      return
+    end
 
     # Get full receipt from get receipt service
     full_receipt = get_receipt_json(receipt_id)
@@ -203,6 +206,9 @@ class DepositController < ApplicationController
         receipt_id = response_json["receipt"]
         # flash[:notice] = "Your authentic coins will be uploaded to Bitshares shortly. We will send you an email notification to " + user_email
         # redirect_to controller: "deposit", action: "completed", receipt: receipt_id, email: user_email
+        if receipt_id.blank?
+          redirect_to deposit_index_url, alert: "Receipt ID is blank"
+        end
         return receipt_id
       end
     else
@@ -274,9 +280,11 @@ class DepositController < ApplicationController
   end
 
   def send_to_bitshares(account, amount)
-    # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html
-    
-    uri = URI.parse("https://73.151.23.115/issue_bitshares.php")
+    if amount == 0
+      return
+    end
+    # http://www.rubyinside.com/nethttp-cheat-sheet-2940.html    
+    uri = URI.parse(Rails.application.credentials.cloudcoin[:issue_bitshares_url])
     params = { :amount => amount, :account => account }
     uri.query = URI.encode_www_form(params)
     http = Net::HTTP.new(uri.host, uri.port)
