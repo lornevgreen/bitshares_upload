@@ -75,6 +75,12 @@ Show Coins:
 - Deploying application updates - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/deploy_updates.html
 
 ## References
+- Spinners:
+	- https://github.com/yangshun/awesome-spinners
+	- https://codepen.io/nikhil8krishnan/pen/rVoXJa
+	- http://samherbert.net/svg-loaders/
+	- https://codepen.io/overdrivemachines/pen/ZMQGPp
+	- https://loading.io/
 - DKIM: 
 	- https://www.stefanwienert.de/blog/2013/06/20/send-bulk-e-mails-safely-with-spf-and-dkim-with-rails/
 	- https://github.com/tomas/tuktuk
