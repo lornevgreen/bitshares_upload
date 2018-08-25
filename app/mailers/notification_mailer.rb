@@ -18,8 +18,9 @@ class NotificationMailer < ApplicationMailer
   end
 
   def deposit_email(email, bitshares_account, deposit_amount)
-    @deposit_amount = deposit_amount
+    @email = email
     @bitshares_account = bitshares_account
+    @deposit_amount = deposit_amount
     mail(to: email, subject: "Your Cloudcoins Will be Transferred to Bitshares")
   end
 end
