@@ -51,7 +51,12 @@ Rails.application.configure do
 
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
-  config.log_level = :debug
+  # The available log levels are: 
+  #   :debug, :info, :warn, :error, :fatal, and :unknown
+  # https://guides.rubyonrails.org/debugging_rails_applications.html#log-levels
+  # config.log_level = :debug
+  # Do not flood production log with unnecessary information
+  config.log_level = :warn
 
   # Prepend all log lines with the following tags.
   config.log_tags = [ :request_id ]
