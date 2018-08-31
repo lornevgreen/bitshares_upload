@@ -29,8 +29,8 @@ Rails.application.routes.draw do
     get 'deposit/completed'
     post 'deposit/upload'
 
-    get 'withdraw/index'
-    get 'withdraw/completed', defaults: {format: 'json'}
+    # get 'withdraw/index'
+    # get 'withdraw/completed', defaults: {format: 'json'}
 
     # Old routes:
 	# get 'welcome/deposit'
@@ -40,7 +40,7 @@ Rails.application.routes.draw do
 	# get 'welcome/withdraw'
 	# get 'welcome/withdraw_completed', defaults: {format: 'json'}
 
-	get 'welcome/summary', defaults: {format: 'json'}
+	# get 'welcome/summary', defaults: {format: 'json'}
   
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
