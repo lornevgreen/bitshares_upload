@@ -72,6 +72,7 @@ class DepositController < ApplicationController
         return
       end
     else
+      logger.warn "nothing to transfer"
       logger.warn {@email + " has 0 CloudCoins to upload to their bitshares account, " + @bitshares_account + "."}
       flash[:alert] = "Nothing to transfer"
     end
