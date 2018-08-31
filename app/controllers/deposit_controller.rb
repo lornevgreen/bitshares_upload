@@ -67,10 +67,12 @@ class DepositController < ApplicationController
         NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
         flash[:notice] = "Your coins will be transferred to bitshares. An email has been sent to #{@email} for your records."
       else
+        logger.warn {@email + " tried to upload " + deposit_amount.to_s + " CloudCoin(s) to bitshares account " + @bitshares_account}
         redirect_to deposit_index_url, alert: "Transfer failed! Your CloudCoins were lost"
         return
       end
     else
+      logger.warn {@email + " has 0 CloudCoins to upload to their bitshares account, " + @bitshares_account + "."}
       flash[:alert] = "Nothing to transfer"
     end
 
@@ -323,8 +325,8 @@ class DepositController < ApplicationController
       return true
     else
       # TODO:
-      logger.error {"Bitshares Transfer script execution failed."}
-      logger.error {error_str}
+      logger.warn {"Bitshares Transfer script execution failed."}
+      logger.warn {error_str}
       return false
     end
   end
