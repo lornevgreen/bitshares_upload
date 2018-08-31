@@ -1,4 +1,6 @@
 require 'net/http'
+require 'open3'
+
 class DepositController < ApplicationController
   before_action :set_email, only: [:upload, :completed]
   before_action :set_bitshares_account, only: [:upload, :completed]
@@ -47,6 +49,12 @@ class DepositController < ApplicationController
 
     # Get full receipt from get receipt service
     full_receipt = get_receipt_json(receipt_id)
+    # Do not proceed if full_receipt is blank.
+    # redirect_to called in send_to_depository
+    if receipt_id.blank?
+      logger.warn {"Receipt ID is blank"}
+      return
+    end
 
     # Calculate value of uploaded cloud coins
     deposit_amount = get_authentic_coins_value(full_receipt)
@@ -57,13 +65,11 @@ class DepositController < ApplicationController
     # Send an email to the user
     if deposit_amount > 0
       NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
+      flash[:notice] = "Your coins will be transferred to bitshares. An email has been sent to #{@email} for your records."
+    else
+      flash[:alert] = "Nothing to transfer"
     end
 
-    if deposit_amount == 0
-      flash[:alert] = "Nothing to transfer"
-    else
-      flash[:notice] = "Your coins will be transferred to bitshares. An email has been sent to #{@email} for your records."
-    end
     redirect_to controller: :deposit,
       action: :completed, 
       receipt_id: receipt_id,
@@ -125,6 +131,11 @@ class DepositController < ApplicationController
     # check if there was no bitshares account entered
     if @bitshares_account.blank?
       redirect_to deposit_index_url, alert: "Bitshares account is missing. Please try again."
+    else
+      stdout_str, error_str, status = Open3.capture3('python3', '../python-bitshares/check_account.py', @bitshares_account)
+      if !status.success?
+        redirect_to deposit_index_url, alert: "Bitshares account does not exist."
+      end      
     end
   end
   def set_uploaded_io
@@ -144,6 +155,13 @@ class DepositController < ApplicationController
     # params.require(:deposit).permit(:email, :bitshares_account, :cloud_coin_file)
   end
 
+  ##
+  # Saves the stack file to public/uploads
+  # Uploaded file is renamed with the year, month, day and time 
+  # prepended to the original file name. Goal is to generate a file
+  # name that is unique.
+  # @param    uploaded_io - ActionDispatch::Http::UploadedFile
+  # @return   full path of saved stack file
   def save_stack_file(uploaded_io)
     # TODO: Generate a more secure filename
     # Generate a file name that will be unique YYYYMMSSuploadedfile.stack
@@ -194,7 +212,10 @@ class DepositController < ApplicationController
 
       # TODO: check if status is NIL
       
-      if (status == "error")
+      if (status.blank?)
+        redirect_to deposit_index_url, alert: "Status from Deposit One Stack is blank"
+        return
+      elsif (status == "error")
         # if the status is "error", redirect to deposit
         error_msg = response_json["message"]
         error_msg = "The uploaded file was not a valid stack file or there was an unknown error."
@@ -279,7 +300,25 @@ class DepositController < ApplicationController
     return total_value
   end
 
+  ##
+  # Sends Cloudcoin tokens to the given account
+  # @param account - Account name in bitshares (String)
+  # @param  amount - Amount that needs to be sent (Integer)
+  # https://makandracards.com/makandra/44452-running-external-commands-with-open3
+  # https://github.com/mx4492/simple_cmd/blob/master/lib/simple_cmd.rb
+  # https://ruby-doc.org/stdlib-2.5.1/libdoc/open3/rdoc/Open3.html#method-c-capture3
+  # 
   def send_to_bitshares(account, amount)
+    stdout_str, error_str, status = Open3.capture3('python3', 'with', 'some', 'args')
+    if status.success?
+      # okay
+    else
+      # raise "did not work"
+      # 
+    end
+  end
+
+  def old_send_to_bitshares(account, amount)
     if amount == 0
       return
     end
