@@ -25,8 +25,7 @@ class DepositController < ApplicationController
   # - Sends an email
   # - If everything is successful redirects to completed
   def upload
-    # Validations of params should have been done before this action started
-    
+    # Validations of params should have been done before this action started   
     # Save uploaded file on disk to /storage/upload 
     uploaded_io_full_path = save_stack_file(@uploaded_io)
     
@@ -60,12 +59,17 @@ class DepositController < ApplicationController
     deposit_amount = get_authentic_coins_value(full_receipt)
 
     # Call the Issue bitshares service with the account name and amount
-    send_to_bitshares(@bitshares_account, deposit_amount)
+    did_send = send_to_bitshares(@bitshares_account, deposit_amount)
 
     # Send an email to the user
     if deposit_amount > 0
-      NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
-      flash[:notice] = "Your coins will be transferred to bitshares. An email has been sent to #{@email} for your records."
+      if did_send
+        NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
+        flash[:notice] = "Your coins will be transferred to bitshares. An email has been sent to #{@email} for your records."
+      else
+        redirect_to deposit_index_url, alert: "Transfer failed! Your CloudCoins were lost"
+        return
+      end
     else
       flash[:alert] = "Nothing to transfer"
     end
@@ -130,9 +134,12 @@ class DepositController < ApplicationController
     @bitshares_account = params[:bitshares_account]
     # check if there was no bitshares account entered
     if @bitshares_account.blank?
-      redirect_to deposit_index_url, alert: "Bitshares account is missing. Please try again."
+      redirect_to deposit_index_url, alert: "Bitshares account is missing. Please enter Bitshares account."
     else
-      stdout_str, error_str, status = Open3.capture3('python3', '../python-bitshares/check_account.py', @bitshares_account)
+      # Check if Bitshares account exists on Bitshares
+      # Executing python script...
+      # Retreiving the check account python script from the credentials
+      stdout_str, error_str, status = Open3.capture3('python3', Rails.application.credentials.bitshares_scripts[:check_account], @bitshares_account)
       if !status.success?
         redirect_to deposit_index_url, alert: "Bitshares account does not exist."
       end      
@@ -309,12 +316,14 @@ class DepositController < ApplicationController
   # https://ruby-doc.org/stdlib-2.5.1/libdoc/open3/rdoc/Open3.html#method-c-capture3
   # 
   def send_to_bitshares(account, amount)
-    stdout_str, error_str, status = Open3.capture3('python3', 'with', 'some', 'args')
+    stdout_str, error_str, status = Open3.capture3('python3', Rails.application.credentials.bitshares_scripts[:transfer], account, amount.to_s)
     if status.success?
-      # okay
+      stdout_json = JSON.parse(stdout_str.chomp.gsub("'", '"'))
+      # TODO: find ID
+      return true
     else
-      # raise "did not work"
-      # 
+      # TODO:
+      return false
     end
   end
 
