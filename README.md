@@ -75,6 +75,9 @@ Show Coins:
 - Deploying application updates - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/deploy_updates.html
 
 ## References
+- Pstore
+	- https://robm.me.uk/ruby/2014/01/25/pstore.html
+	- https://apidock.com/ruby/PStore
 - Spinners:
 	- https://github.com/yangshun/awesome-spinners
 	- https://codepen.io/nikhil8krishnan/pen/rVoXJa
