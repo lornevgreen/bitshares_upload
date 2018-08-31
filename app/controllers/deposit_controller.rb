@@ -323,6 +323,8 @@ class DepositController < ApplicationController
       return true
     else
       # TODO:
+      logger.error {"Bitshares Transfer script execution failed."}
+      logger.error {error_str}
       return false
     end
   end
