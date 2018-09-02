@@ -69,12 +69,39 @@ Show Coins:
 - How To Configure SSH Key-Based Authentication on a Linux Server - https://www.digitalocean.com/community/tutorials/how-to-configure-ssh-key-based-authentication-on-a-linux-server
 
 ## Deployment Instructions
+- Nameserver (if needed): https://support.rackspace.com/how-to/changing-dns-settings-on-linux/
 - Setup Ruby On Rails on Ubuntu 16.04 - https://gorails.com/setup/ubuntu/16.04
 - Installing Passenger + Nginx on Ubuntu 16.04 LTS - https://www.phusionpassenger.com/library/install/nginx/install/oss/xenial/
 - Deploying a Ruby app on a Linux/Unix production server - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/xenial/deploy_app.html
+- Change Client Max Body Size: https://serverfault.com/questions/814767/413-request-entity-too-large-in-nginx-with-client-max-body-size-set
 - Deploying application updates - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/deploy_updates.html
 
+## Using SSL with Passenger in Production
+
+- Certbot - https://certbot.eff.org/lets-encrypt/ubuntuxenial-nginx
+`
+$ sudo apt-get update
+$ sudo apt-get install software-properties-common
+$ sudo add-apt-repository ppa:certbot/certbot
+$ sudo apt-get update
+$ sudo apt-get install python-certbot-nginx
+$ sudo certbot --nginx
+`
+- Test SSL - https://www.ssllabs.com/ssltest/analyze.html?d=www.site.com
+
+## NGINX and Passenger Debug
+- service nginx configtest
+- /usr/sbin/nginx -t
+
+
 ## References
+- HTTPS
+	- https://blog.benroux.me/production-https-rails-app-using-nginx-and-lets-encrypt/
+	- https://www.techrepublic.com/article/how-to-set-dns-nameservers-in-ubuntu-server-18-04/
+	- https://mozilla.github.io/server-side-tls/ssl-config-generator/
+	- https://gorails.com/guides/free-ssl-with-rails-and-nginx-using-let-s-encrypt
+	- https://www.phusionpassenger.com/library/deploy/nginx/prod_ssl.html
+	- https://gist.github.com/rkjha/d898e225266f6bbe75d8
 - Pstore
 	- https://robm.me.uk/ruby/2014/01/25/pstore.html
 	- https://apidock.com/ruby/PStore
