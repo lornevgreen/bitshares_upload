@@ -2,21 +2,15 @@ require 'open3'
 namespace :bitshares do
   desc "Runs a python script and emails cloudcoin"
   task check_transactions: :environment do
-  	account = "hello"
-  	amount = 0
-  	stdout_str, error_str, status = Open3.capture3('python3', Rails.application.credentials.bitshares_scripts[:transfer])
-  	if status.success?
-  	  stdout_json = JSON.parse(stdout_str.chomp.gsub("'", '"'))
-      puts stdout_json
-  	  # TODO: find ID
-  	  return true
-  	else
-  	  # TODO:
-      puts error_str 
-  	  logger.warn {"Bitshares Transfer script execution failed."}
-  	  logger.warn {error_str}
-  	  return false
-  	end
+    withdraw_logger = Logger.new('log/withdraw.log', 10, 1024000)
+    stdout_str, stderr_str, status = Open3.capture3('python3', "../python-bitshares/account_balances.py")
+    if status.success?
+      puts stdout_str
+      withdraw_logger.info {stdout_str}
+    else
+      withdraw_logger.fatal {"Could not execute Python script"}
+      withdraw_logger.fatal {stderr_str}
+    end
+    withdraw_logger.close
   end
-
 end
