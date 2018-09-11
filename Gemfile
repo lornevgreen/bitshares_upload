@@ -58,3 +58,7 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 # https://github.com/FortAwesome/font-awesome-sass
 # gem 'font-awesome-sass', '~> 5.2.0'
+
+# Whenever is a Ruby gem that provides a clear syntax for writing and deploying cron jobs.
+gem 'whenever', require: false
+# $ whenever --update-crontab
