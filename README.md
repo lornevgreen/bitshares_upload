@@ -75,6 +75,30 @@ Show Coins:
 - Deploying a Ruby app on a Linux/Unix production server - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/xenial/deploy_app.html
 - Change Client Max Body Size: https://serverfault.com/questions/814767/413-request-entity-too-large-in-nginx-with-client-max-body-size-set
 - Deploying application updates - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/deploy_updates.html
+- Restart Services:
+```sh
+passenger-config restart-app $(pwd)
+sudo service nginx restart
+```
+
+## Nginx configuration file
+File: /etc/nginx/sites-enabled/bitshares_upload.conf
+```
+server {
+    listen 80;
+    server_name sell.cloudcoin.global;
+
+    # Tell Nginx and Passenger where your app's 'public' directory is
+    root /var/www/bitshares_upload/code/public;
+
+    # set client body size to 20M #
+    client_max_body_size 20M;
+
+    # Turn on Passenger
+    passenger_enabled on;
+    passenger_ruby /home/dynamic/.rvm/gems/ruby-2.5.1/wrappers/ruby;
+}
+```
 
 ## Using SSL with Passenger in Production
 
