@@ -56,9 +56,14 @@ namespace :bitshares do
             if (!t_memo.blank?) && (URI::MailTo::EMAIL_REGEXP.match(t_memo))
               # Download Stack File
               stack_file_path = download_stack_file(t_amount_new)
+              ct_logger.info {"Downloaded file to #{stack_file_path.to_s}"}
               # Email Stack File
-              NotificationMailer.download_email(t_memo, stack_file_path.to_s, t_amount_new).deliver!
+              NotificationMailer.download_email(t_to, t_memo, stack_file_path.to_s, t_amount_new).deliver!
+              ct_logger.info {"Emailed: #{t_memo} Amount: #{t_amount_new}"}
               # TODO: Write to last_withdraw.txt
+              File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
+              # Delete the stack file
+              File.delete(stack_file_path)
             else
               ct_logger.info {"Memo/Email: #{t_memo} (INVALID)"}
               ct_logger.info {"Skipping transaction"}
