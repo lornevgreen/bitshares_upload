@@ -18,3 +18,7 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
+# whenever --update-crontab
+every 2.minute do
+	rake "bitshares:check_transactions"
+end
