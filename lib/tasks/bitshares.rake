@@ -1,5 +1,6 @@
 require 'open3'
 require 'benchmark'
+require 'net/http'
 namespace :bitshares do
   desc "Runs a python script and emails cloudcoin"
   task check_transactions: :environment do
@@ -21,8 +22,7 @@ namespace :bitshares do
     time_to_run = Benchmark.measure {
       stdout_str, stderr_str, status = Open3.capture3('python3', "../python-bitshares/check_transactions.py", last_withdraw_transaction)
       if status.success?
-        puts stdout_str
-        ct_logger.debug {stdout_str}
+        # ct_logger.debug {stdout_str}
         # Parse JSON
         transactions_json = JSON.parse(stdout_str)
       else
@@ -30,12 +30,12 @@ namespace :bitshares do
         ct_logger.fatal {stderr_str}
       end
     }
-    puts "Time taken to run Python script: #{time_to_run.real}"
     ct_logger.info {"Time taken to run Python script: #{time_to_run.real}"}
 
     if transactions_json != ""
       # Iterate through the json in reverse because
       # the oldest transactions need to be processed first
+      ct_logger.info {"Total transactions found: #{transactions_json.size}"}
       transactions_json.reverse_each { |tj|
         # Transaction ID
         t_id = tj["id"]
@@ -46,10 +46,31 @@ namespace :bitshares do
         t_memo = tj["memo"]
         puts "#{t_id}: #{t_from}=>#{t_to} #{t_amount} #{t_currency} #{t_memo}"
         ct_logger.info {"Processing transaction #{t_id}: #{t_from}=>#{t_to} #{t_amount} #{t_currency} #{t_memo}"}
-        # TODO: Download Stack File
-        # stack_file_path = download_stack_file(t_amount)
-        # TODO: Email Stack File
-        # TODO: Write to last_withdraw.txt
+        
+        # Checking Amount
+        t_amount_new = t_amount.to_i
+        if (t_amount_new > 0)
+          # Checking Currency
+          if (t_currency == "CLOUDCOIN")
+            # Check if memo exists
+            if (!t_memo.blank?) && (URI::MailTo::EMAIL_REGEXP.match(t_memo))
+              # Download Stack File
+              stack_file_path = download_stack_file(t_amount_new)
+              # Email Stack File
+              NotificationMailer.download_email(t_memo, stack_file_path.to_s, t_amount_new).deliver!
+              # TODO: Write to last_withdraw.txt
+            else
+              ct_logger.info {"Memo/Email: #{t_memo} (INVALID)"}
+              ct_logger.info {"Skipping transaction"}
+            end
+          else
+            ct_logger.info {"CURRENCY: #{t_currency} (INVALID)"}
+          ct_logger.info {"Skipping transaction"}
+          end
+        else
+          ct_logger.info {"Amount: #{t_amount} (INVALID)"}
+          ct_logger.info {"Skipping transaction"}
+        end
       }
     else
       ct_logger.info {"Python Script output could not be parsed."}
@@ -103,8 +124,8 @@ namespace :bitshares do
       
       # TODO: check if file write was successful
       
-      logger.info "Cloud coin file was saved"
-      logger.debug file_content_json["cloudcoin"].size.to_s + " cloudcoin(s) saved in file " + generated_file_name
+      # logger.info "Cloud coin file was saved"
+      # logger.debug file_content_json["cloudcoin"].size.to_s + " cloudcoin(s) saved in file " + generated_file_name
 
       return download_io_full_path
     else
