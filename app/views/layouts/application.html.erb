@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>BitsharesUpload</title>
+    <title>CloudCoin - BitsharesUpload</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -10,14 +10,9 @@
   </head>
 
   <body>
-    <header>
-      <div>Cloud Coin</div>
-    </header>
-    <main>
-      <%= yield %>
-    </main>
-    <footer>
-      
-    </footer>
+    <%= render "shared/loader" %>
+    <%= render "shared/header" %>
+    <%= yield %>
+    <%= render "shared/footer" %>
   </body>
 </html>
