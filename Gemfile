@@ -62,3 +62,8 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 # Whenever is a Ruby gem that provides a clear syntax for writing and deploying cron jobs.
 gem 'whenever', require: false
 # $ whenever --update-crontab
+
+gem 'bootstrap', '~> 4.1.3'
+gem 'jquery-rails'
+
+gem "font-awesome-rails"

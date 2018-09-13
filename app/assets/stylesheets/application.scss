@@ -1,0 +1,339 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, or any plugin's
+ * vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ */
+
+@import "bootstrap";
+@import "font-awesome";
+@import "animate";
+@import "opensans"; // Open Sans 400, 700
+// @import "https://fonts.googleapis.com/css?family=Open+Sans:400,700";
+
+// @import url("https://fonts.googleapis.com/css?family=Open+Sans:400,700");
+// @import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.4.0/animate.min.css");
+
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: #011627;
+}
+main {
+  flex: 1;
+}
+/*////////////////////////////////*/
+
+section {
+  margin-top: 1.5em;
+  padding: 0 1em;
+}
+
+section .content {
+  margin: 1em 0;
+}
+/* Use this when there is only 1 section and you want it to be vertically aligned */
+#section-main {
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 0;
+}
+section .w800 {
+  align-self: flex-start;
+  max-width: 800px;
+  width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+}
+h1,
+h2,
+h3 {
+  /*   margin-top: 34px;
+  margin-bottom: 17px; */
+}
+h4,
+h5,
+h6 {
+  /*   margin-top: 17px;
+  margin-bottom: 17px; */
+}
+.title {
+  text-shadow: 2px 2px 2px rgba(255, 255, 255, 1);
+}
+.title span {
+  color: #e71d36;
+  font-size: 77%;
+}
+
+/*LOADER******************************/
+#loader-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+}
+#loading-center-absolute {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 200px;
+  width: 200px;
+  margin-top: -100px;
+  margin-left: -100px;
+  -ms-transform: rotate(-135deg); 
+  -moz-transform: rotate(-135deg); 
+    -webkit-transform: rotate(-135deg); 
+    transform: rotate(-135deg);
+  z-index: 1001;
+}
+.object{
+  -moz-border-radius: 50% 50% 50% 50%;
+  -webkit-border-radius: 50% 50% 50% 50%;
+  border-radius: 50% 50% 50% 50%;
+  position: absolute;
+  border-top: 5px solid #FFF;
+  border-bottom: 5px solid transparent;
+  border-left:  5px solid #FFF;
+  border-right: 5px solid transparent;
+  -webkit-animation: animate 2s infinite;
+  animation: animate 2s infinite; 
+}
+#object_one{
+  left: 75px;
+  top: 75px;
+  width: 50px;
+  height: 50px;
+}
+#object_two{
+  left: 65px;
+  top: 65px;
+  width: 70px;
+  height: 70px;
+  -webkit-animation-delay: 0.2s;
+    animation-delay: 0.2s;
+}
+#object_three{
+  left: 55px;
+  top: 55px;
+  width: 90px;
+  height: 90px;
+  -webkit-animation-delay: 0.4s;
+    animation-delay: 0.4s;
+}
+#object_four{
+  left: 45px;
+  top: 45px;
+  width: 110px;
+  height: 110px;
+  -webkit-animation-delay: 0.6s;
+    animation-delay: 0.6s;
+} 
+
+@-webkit-keyframes animate {
+ 
+50% {
+  -ms-transform: rotate(360deg) scale(0.8); 
+  -moz-transform: rotate(360deg) scale(0.8); 
+    -webkit-transform: rotate(360deg) scale(0.8); 
+    transform: rotate(360deg) scale(0.8); 
+  }
+}
+
+@keyframes animate {
+  
+50% {
+  -ms-transform: rotate(360deg) scale(0.8); 
+  -moz-transform: rotate(360deg) scale(0.8); 
+    -webkit-transform: rotate(360deg) scale(0.8); 
+    transform: rotate(360deg) scale(0.8); 
+  } 
+}
+#loader-wrapper .loader-section {
+  position: fixed;
+  top: 0;
+  width: 51%;
+  height: 100%;
+  background-color: #007bff;
+  z-index: 999;
+  -webkit-transform: translateX(0);  /* Chrome, Opera 15+, Safari 3.1+ */
+  -moz-transform: translateX(0); 
+  -ms-transform: translateX(0);  /* IE 9 */
+  transform: translateX(0);  /* Firefox 16+, IE 10+, Opera */
+}
+#loader-wrapper .loader-section.section-left {
+  left: 0;
+}
+#loader-wrapper .loader-section.section-right {
+  right: 0;
+}
+.loaded #loading-center-absolute {
+  opacity: 0;
+  visibility:hidden;
+  -webkit-transition: all 0.3s ease-out;  
+  transition: all 0.3s ease-out;
+}
+
+/* Loaded */
+.loaded #loader-wrapper .loader-section.section-left {
+  -webkit-transform: translateX(-100%);  /* Chrome, Opera 15+, Safari 3.1+ */
+  -moz-transform: translateX(-100%);
+  -ms-transform: translateX(-100%);  /* IE 9 */
+  transform: translateX(-100%);  /* Firefox 16+, IE 10+, Opera */
+  -webkit-transition: all 0.8s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);  
+  transition: all 0.8s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+}
+.loaded #loader-wrapper .loader-section.section-right {
+  -webkit-transform: translateX(100%);  /* Chrome, Opera 15+, Safari 3.1+ */
+  -ms-transform: translateX(100%);  /* IE 9 */
+  -moz-transform: translateX(100%);
+  transform: translateX(100%);  /* Firefox 16+, IE 10+, Opera */
+  -webkit-transition: all 0.8s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);  
+  transition: all 0.8s 0.3s cubic-bezier(0.645, 0.045, 0.355, 1.000);
+}
+.loaded #loader-wrapper {
+  visibility: hidden;
+  -webkit-transform: translateY(-100%);  /* Chrome, Opera 15+, Safari 3.1+ */
+  -ms-transform: translateY(-100%);  /* IE 9 */
+  -moz-transform: translateY(-100%);
+  transform: translateY(-100%);  /* Firefox 16+, IE 10+, Opera */
+  -webkit-transition: all 0.5s 1s ease-out;  
+  transition: all 0.3s 1s ease-out;
+}
+
+.v_blue #loader-wrapper .loader-section,
+.v_navy_blue #loader-wrapper .loader-section {
+  background-color: #121a6d;
+}
+.v_dark #loader-wrapper .loader-section,
+.v_light_dark #loader-wrapper .loader-section {
+  background-color: #030307;
+}
+.v_blue_light #loader-wrapper .loader-section,
+.v_royal_blue #loader-wrapper .loader-section {
+  background-color: #081990;
+}
+
+/*HEADER******************************/
+.navbar-brand {
+  font-weight: 700;
+  // font-size: 1.285em;
+}
+
+/*FILE UPLOAD*************************/
+.inputfile {
+  width: 0.1px;
+  height: 0.1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  z-index: -1;
+}
+
+.inputfile + label {
+  text-overflow: ellipsis;
+  cursor: pointer;
+  overflow: hidden;
+  // font-size: 16px;
+  font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  outline: none;
+  /*   color: #434a54; */
+}
+.inputfile:focus + label,
+.inputfile.has-focus + label {
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+.inputfile + label * {
+  /* pointer-events: none; */
+  /* in case of FastClick lib use */
+}
+
+.inputfile + label i {
+  margin-right: 0.25em;
+}
+
+/*FORM********************************/
+
+.field {
+  margin: 0 auto 1.33em;
+}
+.efield {
+  border: 1px solid red;
+  padding: 1em;
+  border-radius: 4px;
+}
+.edetails {
+  color: red;
+  padding-top: 1em;
+}
+label {
+  font-weight: 700;
+}
+
+// TODO: Check Boxes
+
+/*FOOTER******************************/
+.page-footer {
+  margin-top: 1.618em;
+  background: #007bff;
+  color: rgba(255,255,255,.5);
+  display: flex;
+  justify-content: space-between;
+  
+  .social-links {
+    margin: 0 1em;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .info {
+    padding: 1em 0;
+    display: flex;
+    justify-content: center;
+    margin: 0 1em;
+  }
+  
+  a {
+    color: rgba(255,255,255,.9);
+    padding: 1em;
+  }
+  
+  a:hover {
+    color: rgba(255,255,255,1);
+  }
+}

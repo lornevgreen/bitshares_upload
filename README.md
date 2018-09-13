@@ -75,6 +75,11 @@ Show Coins:
 - Deploying a Ruby app on a Linux/Unix production server - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/xenial/deploy_app.html
 - Change Client Max Body Size: https://serverfault.com/questions/814767/413-request-entity-too-large-in-nginx-with-client-max-body-size-set
 - Deploying application updates - https://www.phusionpassenger.com/library/walkthroughs/deploy/ruby/ownserver/nginx/oss/deploy_updates.html
+```
+git pull
+bundle install --deployment --without development test
+bundle exec rake assets:precompile db:migrate RAILS_ENV=production
+```
 - Restart Services:
 ```sh
 passenger-config restart-app $(pwd)
