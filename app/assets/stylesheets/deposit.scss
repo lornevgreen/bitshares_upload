@@ -1,3 +1,68 @@
 // Place all the styles related to the deposit controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+/* prepend this css:
+- meyer reset
+- https://codepen.io/overdrivemachines/pen/megaYG
+ */
+header nav {
+  /*   background: linear-gradient(90deg, #338fff 10%, #185a9d 90%); */
+}
+
+.t-wrapper {
+  padding-top: 2em;
+  padding-bottom: 0.25em;
+}
+
+.section-graphic {
+  text-align: center;
+  margin-bottom: 1.667em;
+}
+
+.big-total {
+  font-weight: 700;
+  // text-align: center;
+  font-size: 5em;
+}
+
+
+.coins-data {
+  text-align: center;
+  margin: 1.5em 0;
+
+  th,
+  td {
+    padding: 0.5em;
+    // border: 1px solid green;
+  }
+
+  tr {
+    border-bottom: 1px solid #ccc;
+    transition: 0.5s;
+    .fa-check {
+      color: green;
+    }
+    .fa-ban {
+      color: red;
+    }
+  }
+  tr:hover {
+    background: #efefef;
+    transition: 0.5s;
+  }
+  tr:last-child {
+    // border-bottom: none;
+  }
+
+  th {
+    background: #007bff;
+    color: white;
+  }
+
+  .coin-sn,
+  .coin-value {
+    text-align: right;
+    border-right: 1px solid #ccc;
+  }
+}
