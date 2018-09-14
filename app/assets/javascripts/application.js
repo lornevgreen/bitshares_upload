@@ -16,6 +16,7 @@
 //= require jquery3
 //= require popper
 //= require bootstrap
+//= require font_awesome5
 //= require_tree .
 
 // From https://codepen.io/overdrivemachines/pen/PdEZxZ
@@ -69,22 +70,56 @@ $(function() {
   });
   
   //   Show spinner...
-  $(".show-spinner").click(function() {
-    $(this).prop("disabled", true);
-    $("form input").prop("disabled", true);
-    $("label.btn").addClass("disabled");
-    var $icon = $("i", this );
-    $icon.removeClass("fa-upload");
-    $icon.addClass("fa-cog fa-spin" );
-    // $(".form-inner").addClass("spinner");
+  // $(".show-spinner").click(function() {
+  //   $(this).prop("disabled", true);
+  //   $("form input").prop("disabled", true);
+  //   $("label.btn").addClass("disabled");
+  //   var $icon = $("i", this );
+  //   $icon.removeClass("fa-upload");
+  //   $icon.addClass("fa-cog fa-spin" );
+  //   $("#form_stack_upload").submit();
+  //   // $(".form-inner").addClass("spinner");
+  // });
+
+  // $("#form_stack_upload").on('submit', function(event) {
+  $("#form_stack_upload").submit(function() {
+    $upload_button = $(".show-spinner");
+    // Disable the Upload button
+    $upload_button.prop("disabled", true);
+
+    // Disable the Input elements
+    // $("#form_stack_upload input").prop("disabled", true);
+    
+    // Disable the Choose File button
+    // $("label.btn").addClass("disabled");
+
+
+    $upload_button.append("<i class='fa fa-cog fa-spin'></i>");
+    // var $icon = $("i", $upload_button );
+    // $icon.removeClass("fa-upload");
+    // $icon.addClass("fa fa-cog fa-spin" );
+
+    // var preLoder = $(".loader-wrapper");
+    // $("body").removeClass("loaded");
+    // preLoder.hide();
+    // preLoder.delay(700).fadeIn(500);
+
+    // this.submit();
+    // return true;
   });
+  
+  // $("form").submit(function() {
+  //   $upload_button = $(".show-spinner");
+  //   $upload_button.prop("disabled", true);
+
+  // });
   
   // Enable tooltips everywhere
   $('[data-toggle="tooltip"]').tooltip();
   
   $(window).on('load', function() {
 		var preLoder = $(".loader-wrapper");
-		preLoder.delay(700).fadeOut(500);
+    // preLoder.delay(700).fadeOut(500);
 		$('body').addClass('loaded');
 	});
 });
