@@ -1,30 +1,54 @@
-<section class="upload-bitshares">
-  <h1>Upload to Bitshares</h1>
-  <div class="steps">
-    <b>Select Files</b> | Status
-  </div>
-  <% flash.each do |name, msg| -%>
-    <%= content_tag :div, msg, class: name %>
-  <% end -%>
-  <div class="form-container">
-    <%= form_tag({:action => "upload"}, {:multipart => true, :method => :post}) do %>
-      <div class="form-inner">
+<main>
+  <section id="section-main">
+    <div class="w800">
+      <div class="t-wrapper">
+        <div class="section-graphic">
+          <img src="https://image.flaticon.com/icons/svg/1067/1067414.svg" alt="" height="128" width="128">
+        </div>
+
+        <h5 class="title">Transfer CloudCoins to your BitShares Wallet</h5>
+      </div>
+      <hr>
+      <% flash.each do |name, msg| %>
+        <div class="alert <%= bootstrap_class_for(name) %> alert-dismissible fade show" role="alert">
+          <%= msg %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      <% end %>
+      <div class="p-1"></div>
+      <%= form_tag({:action => "upload"}, {:multipart => true, :method => :post, id: "form_stack_upload", :authenticity_token => true}) do %>
         <div class="field">
-          <%= label_tag "email" %>
-          <%= text_field_tag "email" %>
+          <%= label_tag "email" do %>
+            Email <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" data-title="We will email you a report about your upload for your records. Your email will not be stored."></i>
+          <% end %>
+          <%= text_field_tag "email", nil, class: "form-control" %>
         </div>
         <div class="field">
-          <%= label_tag "bitshares_account" %>
-          <%= text_field_tag "bitshares_account" %>
-        </div class="field">
-        <div class="field">
-          <%= label_tag "cloud_coin_file" %>
-          <%= file_field_tag 'cloud_coin_file' %>
+          <%= label_tag "bitshares_account" do %>
+            BitShares Account <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" data-title="Enter your BitShares account username. If you don't have one visit: https://wallet.bitshares.org/"></i>
+          <% end %>
+          <%= text_field_tag "bitshares_account", nil, class: "form-control" %>
         </div>
         <div class="field">
-          <%= submit_tag "Upload", class: "btn" %>
+          <%= label_tag "cloud_coin_file" do %>
+            CloudCoin File (Stack File) <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" data-title="Choose a file that has your cloudcoins. It must be a valid .stack file."></i>
+          <% end %>
+          <br>
+          <%= file_field_tag 'cloud_coin_file', class: "inputfile", "data-multiple-caption" => "{count} files selected", accept: ".stack" %>
+          <%= label_tag "cloud_coin_file", class: "btn btn-primary" do %>
+            <i class="fas fa-upload"></i>
+            <span>Choose a file&hellip;</span>
+          <% end %>
         </div>
-      </div>      
-    <% end %>
-  </div>
-</section>
+        <div class="p-1"></div>
+        <div class="field">
+          <%= button_tag "submit", class: "btn btn-primary btn-lg btn-block show-spinner"  do %>
+            UPLOAD </button>
+          <% end %>
+        </div>
+      <% end %> <!-- form --> 
+    </div>
+  </section>
+</main>
