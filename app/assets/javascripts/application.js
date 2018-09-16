@@ -41,6 +41,9 @@ var firstLoad = true;
 
 $(function() {
   console.log("JQuery Ready function");
+  onPageLoad();
+});
+function onPageLoad() {
   // Stop playing video when Modal is closed
   //https://youtu.be/dQw4w9WgXcQ
   $youtubeModal = $("#videoModal");
@@ -136,7 +139,7 @@ $(function() {
     // preLoder.delay(700).fadeOut(500);
 		$('body').addClass('loaded');
 	});
-});
+}
 
 $( document ).on('turbolinks:load', function() {
   console.log("turbolinks:load function");
@@ -146,6 +149,7 @@ $( document ).on('turbolinks:load', function() {
     preLoder.delay(700).fadeOut(500);
     // // $('body').addClass('loaded');
     $('body').delay(100).queue(function(){$('body').addClass('loaded')});
+    onPageLoad();
   }
   firstLoad = false;  
 })
