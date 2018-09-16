@@ -141,7 +141,9 @@ function onPageLoad() {
 	});
 }
 
-$( document ).on('turbolinks:load', function() {
+// $( document ).on('turbolinks:load', function() {
+// https://github.com/turbolinks/turbolinks#observing-navigation-events
+document.addEventListener("turbolinks:load", function() {
   console.log("turbolinks:load function");
 
   if (firstLoad == false) {
