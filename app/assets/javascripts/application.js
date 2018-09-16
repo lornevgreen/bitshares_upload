@@ -27,8 +27,20 @@
 // blue = #338fff
 // blue border = #007bff
 // https://www.flaticon.com/search?style_id=14
+// 
+// Load Order:
+// 1) Turbolinks:load
+// 2) JQuery Ready
+// 3) Window Load
+// 
+// When Using turbo links:
+// 1) Turbolinks:load
+
+console.log("Top of JS");
+var firstLoad = true;
 
 $(function() {
+  console.log("JQuery Ready function");
   // Stop playing video when Modal is closed
   //https://youtu.be/dQw4w9WgXcQ
   $youtubeModal = $("#videoModal");
@@ -83,6 +95,7 @@ $(function() {
 
   // $("#form_stack_upload").on('submit', function(event) {
   $("#form_stack_upload").submit(function() {
+    console.log("Form submit function");
     $upload_button = $(".show-spinner");
     // Disable the Upload button
     $upload_button.prop("disabled", true);
@@ -118,8 +131,23 @@ $(function() {
   $('[data-toggle="tooltip"]').tooltip();
   
   $(window).on('load', function() {
+    console.log("Window on load function");
 		var preLoder = $(".loader-wrapper");
     // preLoder.delay(700).fadeOut(500);
 		$('body').addClass('loaded');
 	});
 });
+
+$( document ).on('turbolinks:load', function() {
+  console.log("turbolinks:load function");
+
+  if (firstLoad == false) {
+    var preLoder = $(".loader-wrapper");
+    preLoder.delay(700).fadeOut(500);
+    // // $('body').addClass('loaded');
+    $('body').delay(100).queue(function(){$('body').addClass('loaded')});
+  }
+  firstLoad = false;  
+})
+
+console.log("End of JS");
