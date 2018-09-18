@@ -111,7 +111,11 @@ class DepositController < ApplicationController
     # status is not fail...
     # Extract data from JSON
     @receipt_id = response_json["receipt_id"]
-    @checked_at = response_json["time"]
+    # @checked_at = response_json["time"]
+    # @checked_at = DateTime.strptime(response_json["time"], "%Y-%m-%d %I:%M:%p").in_time_zone("America/Los_Angeles")
+    Time.zone = "Pacific Time (US & Canada)"
+    t = Time.zone.parse(response_json["time"])
+    @checked_at = t.inspect
     @total_authentic = response_json["total_authentic"]
     @total_fracked = response_json["total_fracked"]
     @total_counterfeit = response_json["total_counterfeit"]
