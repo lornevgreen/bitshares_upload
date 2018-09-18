@@ -41,12 +41,14 @@ var firstLoad = true;
 
 $(function() {
   console.log("JQuery Ready function");
-  onPageLoad();
+  opl();
 });
-function onPageLoad() {
+function opl() {
   // Stop playing video when Modal is closed
   //https://youtu.be/dQw4w9WgXcQ
+  console.log("opl() - On Page Load top");
   $youtubeModal = $("#videoModal");
+  console.log($youtubeModal);
   $youtubeModal.on("hidden.bs.modal", function() {
     var $this = $(this).find("iframe"),
       tempSrc = $this.attr("src");
@@ -139,6 +141,8 @@ function onPageLoad() {
     // preLoder.delay(700).fadeOut(500);
 		$('body').addClass('loaded');
 	});
+
+  console.log("opl() - end");
 }
 
 // $( document ).on('turbolinks:load', function() {
@@ -151,7 +155,7 @@ document.addEventListener("turbolinks:load", function() {
     preLoder.delay(700).fadeOut(500);
     // // $('body').addClass('loaded');
     $('body').delay(100).queue(function(){$('body').addClass('loaded')});
-    onPageLoad();
+    opl();
   }
   firstLoad = false;  
 })
