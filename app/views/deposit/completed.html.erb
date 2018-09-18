@@ -1,48 +1,74 @@
-<section class="upload-bitshares">
-  <h1>Upload to Bitshares</h1>
-  <div class="steps">
-    Select Files | <b>Finished</b>
-  </div>
-  <% flash.each do |name, msg| -%>
-    <%= content_tag :div, msg, class: name %>
-  <% end -%>
-  <div class="table-container">
-    <table class="stack-file-data">
-      <tr class="tfield">
-        <td class="col1">Receipt ID</td>
-        <td class="col2"><%= @receipt_id %></td>
-      </tr>
-      <tr class="tfield">
-        <td class="col1">Time</td>
-        <td class="col2"><%= @checked_at %></td>
-      </tr>
-      <tr class="tfield">
-        <td class="col1"><b>Total Value</b></td>
-        <td class="col2"><b><%= @total_authentic_coins_value %></b></td>
-      </tr>
-      <tr class="tfield">
-        <td class="col1">Authentic Coins</td>
-        <td class="col2"><%= @total_authentic %></td>
-      </tr>
-      <tr class="tfield">
-        <td class="col1">Fracked Coins</td>
-        <td class="col2"><%= @total_fracked %></td>
-      </tr>
-      <tr class="tfield">
-        <td class="col1">Counterfeit Coins</td>
-        <td class="col2"><%= @total_counterfeit %></td>
-      </tr>
-      <tr class="tfield">
-        <td class="col1">Lost Coins</td>
-        <td class="col2"><%= @total_lost %></td>
-      </tr>
-      <% @coins.each do |coin| %>
-        <tr class="tfield">
-          <td class="col1">Coin # <%= coin["sn"] %></td>
-          <td class="col2"><%= coin["status"] %></td>
-        </tr>
-      <% end %>
-    </table>
-  </div>
-  <div><%= link_to "Back", deposit_index_path, class: "btn" %></div>
-</section>
+<main>
+  <section id="section-main">
+    <div class="w800">
+      <div class="t-wrapper">
+        <div class="section-graphic">
+          <img src="https://image.flaticon.com/icons/svg/1067/1067414.svg" alt="" height="128" width="128">
+        </div>
+        <h5 class="title">Transfer Cloudcoins to your Bitshares Wallet</h5>
+      </div>
+      <hr>
+      <div class="big-total">
+        <%= number_with_delimiter(@total_authentic_coins_value) %>
+      </div>
+      <p class="py-2">
+        <%= "Cloudcoin".pluralize(@total_authentic_coins_value) %> were uploaded to your Bitshares account - <b><%= @bitshares_account %></b>. <br> All recent transactions can be viewed on the <a href="http://bts.ai/u/cloudcoin">Bitshares Explorer</a>.
+      </p>
+      <p>
+        Go back to <%= link_to "Upload More Coins", deposit_index_path %>
+      </p>
+
+      <p class="py-2">
+        List of all the CloudCoins you uploaded:
+      </p>
+
+      <table class="coins-data">
+        <thead>
+          <tr>
+            <th>Coin #</th>
+            <th>Value</th>
+            <th>Authentic?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @coins.each do |coin| %>
+            <% if coin["status"] == "authentic" %>
+              <tr>
+                <td class="coin-sn"><%= coin["sn"] %></td>
+                <td class="coin-value"><%= cloudcoin_value(coin["sn"]) %></td>
+                <td class="coin-status"><i class="fas fa-check"></i></td>
+              </tr>
+            <% else %>
+              <tr class="alert-danger">
+                <td class="coin-sn"><%= coin["sn"] %></td>
+                <td class="coin-value"><%= cloudcoin_value(coin["sn"]) %></td>
+                <td class="coin-status"><span class="badge badge-danger"><%= coin["status"].capitalize %></span></td>
+              </tr>
+            <% end %>
+          <% end %>
+          <tr>
+            <td class="text-right"><strong>Total Value</strong></td>
+            <td class="text-left" colspan="2"><strong><%= @total_authentic_coins_value %></strong></td>
+          </tr>
+          <tr>
+            <td class="text-right">Authentic Coins</td>
+            <td class="text-left" colspan="2"><%= @total_authentic %></td>
+          </tr>
+          <tr>
+            <td class="text-right">Fracked Coins</td>
+            <td class="text-left" colspan="2"><%= @total_fracked %></td>
+          </tr>
+          <tr>
+            <td class="text-right">Counterfeit Coins</td>
+            <td class="text-left" colspan="2"><%= @total_counterfeit %></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p class="font-italic">
+        Receipt ID: <%= link_to @receipt_id, { controller: "deposit", action: "completed", bitshares_account: @bitshares_account, email: @email, receipt_id: @receipt_id } %>    
+      </p>
+      <p class="font-italic">Created: <%= @checked_at %></p>
+    </div>
+  </section>
+</main>
