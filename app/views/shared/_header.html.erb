@@ -1,9 +1,10 @@
 <header>
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-    <a class="navbar-brand" href="https://sell.cloudcoin.global/">
-      <img src="https://image.ibb.co/mEm5c9/cc_logo.png" alt="" height="30" width="30" class="d-inline-block align-top">
+    <%= link_to root_path, class: "navbar-brand" do %>
+      <%= image_tag "cc_logo.png", size: "30x30", class: "d-inline-block align-top", alt: "CloudCoin" %>
       CLOUDCOIN
-    </a>
+    
+    <% end %>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#site-nav" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -14,14 +15,14 @@
           <a class="nav-link" href="#">Deposit to BitShares <span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" title="Comming Soon">Withdraw from BitShares</a>
+          <a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" data-title="Coming Soon">Withdraw from BitShares</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" title="Comming Soon">Stack File Checker</a>
+          <a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" data-title="Coming Soon">Stack File Checker</a>
         </li>
       </ul>
       <div class="nav-right">
-      <button type="button" class="btn btn-outline-light" data-toggle="modal" data-target="#videoModal">
+      <button type="button" class="btn btn-outline-light animation animated fadeInDown" data-toggle="modal" data-target="#videoModal">
   How to?
       </button>
       <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel" aria-hidden="true">
