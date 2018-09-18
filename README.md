@@ -126,6 +126,8 @@ $ sudo certbot --nginx
 ## References
 - Date / Time / DateTime
 	- https://stackoverflow.com/questions/15849050/how-to-create-a-ruby-datetime-from-existing-time-zone-for-rails
+	- https://rpanachi.com/2016/07/04/ruby-is-time-to-talk-about-timezones
+	- http://danilenko.org/2012/7/6/rails_timezones/
 - ActionController::InvalidAuthenticityToken
 
 - Display Flash Messages:
