@@ -1,7 +1,40 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>CloudCoin - BitsharesUpload</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-125974527-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      document.addEventListener('turbolinks:load', event => {
+        console.log("gtag in turbolinks:load");
+        if (typeof gtag === 'function') {
+          console.log("gtag is a function");
+          gtag('js', new Date());
+          gtag('config', 'UA-125974527-1', {
+            'page_location': event.data.url
+          });
+        }
+      });
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <title>CloudCoin - BitShares Upload</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="keywords" content="CloudCoin,BitShares,exchange,Cloud Currency">
+    <meta name="description" content="Upload your CloudCoins to BitShares. CloudCoin is the world's first Cloud Currency. Upload your .stack files. Use BitShares to exchange your CloudCoins to any other Digital Currency">
+    <meta name="subject" content="Upload CloudCoin (.stack file) to BitShares Wallet">
+    <meta name="copyright"content="CloudCoin Consortium">
+    <meta name="language" content="EN">
+    <meta name="topic" content="CloudCoin - Cloud Currency, Digital Currency">    
+    <meta name="author" content="Dipen Chauhan, info@cloudcoin.global">
+    <meta name="designer" content="Dipen Chauhan">
+    <meta name="reply-to" content="info@cloudcoin.global">
+    <meta name="coverage" content="Worldwide">
+    <meta name="distribution" content="Global">
+    <meta name="google-site-verification" content="NyIxj-kqU9Bj9iEQf_2b4i44CM25avV3AW0-ZPMSqbo" />
+
+
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
