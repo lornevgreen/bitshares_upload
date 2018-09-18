@@ -124,6 +124,13 @@ $ sudo certbot --nginx
 
 
 ## References
+- Date / Time / DateTime
+	- https://stackoverflow.com/questions/15849050/how-to-create-a-ruby-datetime-from-existing-time-zone-for-rails
+- ActionController::InvalidAuthenticityToken
+
+- Display Flash Messages:
+	- https://gist.github.com/yildizib/11eab3f91a503a05360c78750fab929c
+
 - HTTPS
 	- https://blog.benroux.me/production-https-rails-app-using-nginx-and-lets-encrypt/
 	- https://www.techrepublic.com/article/how-to-set-dns-nameservers-in-ubuntu-server-18-04/
