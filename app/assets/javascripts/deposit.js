@@ -1,16 +1,12 @@
-console.log("Top of JS");
 var firstLoad = true;
 
 $(function() {
-  console.log("JQuery Ready function");
   opl();
 });
 function opl() {
   // Stop playing video when Modal is closed
   //https://youtu.be/dQw4w9WgXcQ
-  console.log("opl() - On Page Load top");
   $youtubeModal = $("#videoModal");
-  console.log($youtubeModal);
   $youtubeModal.on("hidden.bs.modal", function() {
     var $this = $(this).find("iframe"),
       tempSrc = $this.attr("src");
@@ -62,7 +58,6 @@ function opl() {
 
   // $("#form_stack_upload").on('submit', function(event) {
   $("#form_stack_upload").submit(function() {
-    console.log("Form submit function");
     $upload_button = $(".show-spinner");
     // Disable the Upload button
     $upload_button.prop("disabled", true);
@@ -98,20 +93,15 @@ function opl() {
   $('[data-toggle="tooltip"]').tooltip();
   
   $(window).on('load', function() {
-    console.log("Window on load function");
 		var preLoder = $(".loader-wrapper");
     // preLoder.delay(700).fadeOut(500);
 		$('body').addClass('loaded');
 	});
-
-  console.log("opl() - end");
 }
 
 // $( document ).on('turbolinks:load', function() {
 // https://github.com/turbolinks/turbolinks#observing-navigation-events
 document.addEventListener("turbolinks:load", function() {
-  console.log("turbolinks:load function");
-
   if (firstLoad == false) {
     var preLoder = $(".loader-wrapper");
     preLoder.delay(700).fadeOut(500);
@@ -120,6 +110,4 @@ document.addEventListener("turbolinks:load", function() {
     opl();
   }
   firstLoad = false;  
-})
-
-console.log("End of JS");
+});
