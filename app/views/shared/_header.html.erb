@@ -2,8 +2,7 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <%= link_to root_path, class: "navbar-brand" do %>
       <%= image_tag "cc_logo.png", size: "30x30", class: "d-inline-block align-top", alt: "CloudCoin" %>
-      CLOUDCOIN
-    
+      CLOUDCOIN    
     <% end %>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#site-nav" aria-controls="site-nav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -22,8 +21,8 @@
         </li>
       </ul>
       <div class="nav-right">
-      <button type="button" class="btn btn-outline-light animation animated fadeInDown" data-toggle="modal" data-target="#videoModal">
-  How to?
+      <button type="button" class="btn btn-light animated pulse delay-5s" data-toggle="modal" data-target="#videoModal" id ="videoModalShowButton">
+  How to upload?
       </button>
       <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
@@ -35,7 +34,7 @@
         </button>
             </div>
             <div class="modal-body">
-              <iframe width="100%" height="400" src="https://www.youtube.com/embed/FeaznLY9LUk" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              <iframe src="https://www.youtube.com/embed/FeaznLY9LUk" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
           </div>
         </div>
