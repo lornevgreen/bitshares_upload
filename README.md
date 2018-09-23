@@ -124,6 +124,16 @@ $ sudo certbot --nginx
 
 
 ## References
+- Favicons
+	- https://gist.github.com/tashman/6453751
+	- https://rubyplus.com/articles/1751-How-to-Add-Favicon-to-Rails-4-2-App-in-5-minutes
+	- https://realfavicongenerator.net/
+- Google Analytics
+	- https://gist.github.com/DimaSamodurov/127c39244d0b411bfb474a8102a83497
+	- https://github.com/turbolinks/turbolinks/issues/73
+- HTML5 and Meta Tags References
+	- https://github.com/h5bp/html5-boilerplate/blob/master/src/index.html
+	- https://gist.github.com/lancejpollard/1978404
 - Date / Time / DateTime
 	- https://stackoverflow.com/questions/15849050/how-to-create-a-ruby-datetime-from-existing-time-zone-for-rails
 	- https://rpanachi.com/2016/07/04/ruby-is-time-to-talk-about-timezones
@@ -166,7 +176,7 @@ $ sudo certbot --nginx
 	- https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet#code
 	- https://guides.github.com/features/mastering-markdown/
 
-## Steps to get on Bitshares (No Longer Used)
+## Steps to get on Bitshares (Depreciated)
 
 1. Setup your own Testnet Delayed Node
 2. Testnet Bitshares Watcher (staggered orders that will be collected from your uploads)
