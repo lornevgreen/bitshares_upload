@@ -124,6 +124,11 @@ $ sudo certbot --nginx
 
 
 ## References
+- Dynamic Title
+	- https://stackoverflow.com/a/16637619/1553074
+	- https://rubyplus.com/articles/3321-Pretty-Page-Title-in-Rails-5
+	- http://nithinbekal.com/posts/rails-page-titles/
+	- https://andycroll.com/ruby/set-title-in-the-view-template-using-content-for/
 - Favicons
 	- https://gist.github.com/tashman/6453751
 	- https://rubyplus.com/articles/1751-How-to-Add-Favicon-to-Rails-4-2-App-in-5-minutes
