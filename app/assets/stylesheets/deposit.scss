@@ -6,6 +6,11 @@ header nav {
   /*   background: linear-gradient(90deg, #338fff 10%, #185a9d 90%); */
 }
 
+#videoModalShowButton {
+  // -vendor-animation-iteration-count: 3;
+  animation-iteration-count: 5;
+}
+
 .t-wrapper {
   padding-top: 2em;
   padding-bottom: 0.25em;
