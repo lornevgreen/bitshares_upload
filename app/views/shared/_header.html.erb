@@ -10,36 +10,38 @@
 
     <div class="collapse navbar-collapse" id="site-nav">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="#">Deposit to BitShares <span class="sr-only">(current)</span></a>
+        <li class="nav-item <%= 'active' if current_page?(deposit_index_path) || current_page?(root_path) %>">
+          <%= link_to "Deposit to BitShares", deposit_index_path, class: "nav-link" %>
         </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" data-title="Coming Soon">Withdraw from BitShares</a>
+        <li class="nav-item <%= 'active' if (current_page?(withdraw_index_path)) %>">
+          <%= link_to "Withdraw from BitShares", withdraw_index_path, class: "nav-link" %>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#" data-toggle="tooltip" data-placement="bottom" data-title="Coming Soon">Stack File Checker</a>
         </li>
       </ul>
-      <div class="nav-right">
-      <button type="button" class="btn btn-light animated pulse delay-5s" data-toggle="modal" data-target="#videoModal" id ="videoModalShowButton">
-  How to Upload
-      </button>
-      <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="videoModalLabel">Exchange CloudCoins for Bitshares CLOUDCOIN tokens</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-            </div>
-            <div class="modal-body">
-              <iframe src="https://www.youtube.com/embed/FeaznLY9LUk" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <% if current_page?(deposit_index_path) || current_page?(root_path) %>
+        <div class="nav-right">
+          <button type="button" class="btn btn-light animated pulse delay-5s" data-toggle="modal" data-target="#videoModal" id ="videoModalShowButton">
+              How to Upload
+          </button>
+          <div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="videoModalLabel">Exchange CloudCoins for Bitshares CLOUDCOIN tokens</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+                </div>
+                <div class="modal-body">
+                  <iframe src="https://www.youtube.com/embed/FeaznLY9LUk" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </div>
+      <% end %>
     </div>
   </nav>
 </header>
