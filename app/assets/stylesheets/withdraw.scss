@@ -1,3 +1,37 @@
 // Place all the styles related to the withdraw controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.youtube-player {
+  width: 100%;
+  display: block;
+  position: relative;
+  cursor: pointer;
+  max-height: 360px;
+  height: 100%;
+  overflow: hidden;
+  padding-bottom: 56.25%;
+  margin: 0 auto;
+  img.thumbnail {
+    bottom: -100%;
+    display: block;
+    left: 0;
+    margin: auto;
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    position: absolute;
+    right: 0;
+    top: -100%;
+  }
+  .play-btn {
+    height: 72px;
+    width: 72px;
+    left: 50%;
+    top: 50%;
+    margin-left: -36px;
+    margin-top: -36px;
+    position: absolute;
+    background: url("http://i.imgur.com/TxzC70f.png") no-repeat;
+  }
+}
