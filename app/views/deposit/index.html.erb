@@ -34,7 +34,7 @@
         </div>
         <div class="field">
           <%= label_tag "cloud_coin_file" do %>
-            CloudCoin File (Stack File) <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" data-title="Choose a file that has your cloudcoins. It must be a valid .stack file."></i>
+            CloudCoin File (Stack File, 1 MB Maximum) <i class="fas fa-info-circle" data-toggle="tooltip" data-placement="right" data-title="Choose a file that has your cloudcoins. It must be a valid .stack file less than 1 MB."></i>
           <% end %>
           <br>
           <%= file_field_tag 'cloud_coin_file', class: "inputfile", "data-multiple-caption" => "{count} files selected", accept: ".stack" %>
