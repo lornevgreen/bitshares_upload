@@ -59,7 +59,9 @@ class DepositController < ApplicationController
     deposit_amount = get_authentic_coins_value(full_receipt)
 
     # Call the Issue bitshares service with the account name and amount
-    did_send = send_to_bitshares(@bitshares_account, deposit_amount)
+    if deposit_amount > 0
+      did_send = send_to_bitshares(@bitshares_account, deposit_amount)
+    end
 
     # Send an email to the user
     if deposit_amount > 0
