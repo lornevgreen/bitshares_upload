@@ -325,6 +325,9 @@ class DepositController < ApplicationController
   # https://ruby-doc.org/stdlib-2.5.1/libdoc/open3/rdoc/Open3.html#method-c-capture3
   # 
   def send_to_bitshares(account, amount)
+    if amount <= 0
+      return false
+    end
     stdout_str, error_str, status = Open3.capture3('python3', Rails.application.credentials.bitshares_scripts[:transfer], account, amount.to_s)
     if status.success?
       stdout_json = JSON.parse(stdout_str.chomp.gsub("'", '"'))
