@@ -61,6 +61,13 @@ function opl() {
     $input.on("change", function(e) {
       var fileName = "";
 
+      if (this.files && this.files.length == 1) {
+        if (this.files[0].size > 1200000) {
+          alert("File size is too big. Please select a file that is smaller than 1 MB");
+          this.value = "";
+        }
+      }
+
       if (this.files && this.files.length > 1)
         fileName = (this.getAttribute("data-multiple-caption") || "").replace(
           "{count}",
