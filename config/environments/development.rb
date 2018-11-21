@@ -41,15 +41,24 @@ Rails.application.configure do
   # so we need to add openssl_verify_mode: 'none'
   # http://batsov.com/articles/2012/12/06/dealing-with-ssl-certificate-validation-errors-in-rails/
   # https://stackoverflow.com/questions/4505795/rails-3-opensslsslsslerror-hostname-was-not-match-with-the-server-certific
+  # config.action_mailer.smtp_settings = {
+  #   address:              "mail.cloudcoin.global",
+  #   port:                 587,
+  #   domain:               'cloudcoin.global',
+  #   user_name:            Rails.application.credentials.mailer[:user_name],
+  #   password:             Rails.application.credentials.mailer[:password],
+  #   authentication:       'plain',
+  #   enable_starttls_auto: true,
+  #   openssl_verify_mode:  'none'
+  # }
   config.action_mailer.smtp_settings = {
-    address:              "mail.cloudcoin.global",
+    address:              'smtp.gmail.com',
     port:                 587,
-    domain:               'cloudcoin.global',
+    domain:               'gmail.com',
     user_name:            Rails.application.credentials.mailer[:user_name],
     password:             Rails.application.credentials.mailer[:password],
-    authentication:       'plain',
-    enable_starttls_auto: true,
-    openssl_verify_mode:  'none'
+    authentication:       :plain,
+    enable_starttls_auto: true
   }
 
   # Print deprecation notices to the Rails logger.
