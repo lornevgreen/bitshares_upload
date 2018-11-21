@@ -5,7 +5,8 @@ namespace :bitshares do
   desc "Runs a python script and emails cloudcoin"
   task check_transactions: :environment do
     ct_logger = Logger.new('log/check_transactions.log', 10, 1024000)
-    ct_logger.info {"===Starting check_transactions==="}
+    cte_logger = Logger.new('log/check_transactions_error.log', 10, 1024000)
+    ct_logger.info {"===STARTED check_transactions==="}
 
     last_withdraw_transaction = ""
     # Check if the last transaction file exists
@@ -16,7 +17,7 @@ namespace :bitshares do
       ct_logger.info {"last_withdraw.txt not found."}
     end
 
-    ct_logger.info {"===Calling Python Script==="}
+    ct_logger.info {"Calling Python Script"}
     
     transactions_json = ""
     time_to_run = Benchmark.measure {
@@ -35,7 +36,7 @@ namespace :bitshares do
     if transactions_json != ""
       # Iterate through the json in reverse because
       # the oldest transactions need to be processed first
-      ct_logger.info {"Total transactions found: #{transactions_json.size}"}
+      ct_logger.info {"Transactions found: #{transactions_json.size}"}
       transactions_json.reverse_each { |tj|
         # Transaction ID
         t_id = tj["id"]
@@ -44,7 +45,7 @@ namespace :bitshares do
         t_amount = tj["amount"]
         t_currency = tj["currency"]
         t_memo = tj["memo"]
-        puts "#{t_id}: #{t_from}=>#{t_to} #{t_amount} #{t_currency} #{t_memo}"
+        # puts "#{t_id}: #{t_from}=>#{t_to} #{t_amount} #{t_currency} #{t_memo}"
         ct_logger.info {"Processing transaction #{t_id}: #{t_from}=>#{t_to} #{t_amount} #{t_currency} #{t_memo}"}
         
         # Checking Amount
@@ -55,8 +56,8 @@ namespace :bitshares do
             # Check if memo exists
             if (t_memo.blank?) || !(URI::MailTo::EMAIL_REGEXP.match(t_memo))
               ct_logger.info {"Memo/Email: #{t_memo} (INVALID)"}
-              ct_logger.info {"Attempting to send coins to default account get.dipen@gmail.com"}
-              t_memo = "get.dipen@gmail.com"
+              ct_logger.info {"Default Email: dipen.chauhan@protonmail.com"}
+              t_memo = "dipen.chauhan@protonmail.com"
             end
             # Download Stack File
             stack_file_path = download_stack_file(t_amount_new)
@@ -69,16 +70,20 @@ namespace :bitshares do
             # Delete the stack file
             File.delete(stack_file_path)
           else
-            ct_logger.info {"CURRENCY: #{t_currency} (INVALID)"}
-          ct_logger.info {"Skipping transaction"}
+            ct_logger.error {"Currency: #{t_currency} (INVALID)"}
+            ct_logger.error {"Skipping transaction"}
+            cte_logger.error {"#{t_id}: Amount: #{t_amount_new} Currency: #{t_currency} (INVALID)"}
+            File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
           end
         else
-          ct_logger.info {"Amount: #{t_amount} (INVALID)"}
-          ct_logger.info {"Skipping transaction"}
+          ct_logger.error {"Amount: #{t_amount} (INVALID)"}
+          ct_logger.error {"Skipping transaction"}
+          cte_logger.error {"#{t_id}: Amount: #{t_amount} (INVALID)"}
+          File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
         end
       }
     else
-      ct_logger.info {"Python Script output could not be parsed."}
+      ct_logger.error {"Python Script output could not be parsed."}
     end
     
     ct_logger.close
