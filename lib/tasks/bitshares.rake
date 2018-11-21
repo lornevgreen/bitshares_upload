@@ -72,13 +72,13 @@ namespace :bitshares do
           else
             ct_logger.error {"Currency: #{t_currency} (INVALID)"}
             ct_logger.error {"Skipping transaction"}
-            cte_logger.error {"#{t_id}: Amount: #{t_amount_new} Currency: #{t_currency} (INVALID)"}
+            cte_logger.error {"#{t_id}: #{t_from}=>#{t_to} Amount: #{t_amount_new} Currency: #{t_currency} (INVALID)"}
             File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
           end
         else
           ct_logger.error {"Amount: #{t_amount} (INVALID)"}
           ct_logger.error {"Skipping transaction"}
-          cte_logger.error {"#{t_id}: Amount: #{t_amount} (INVALID)"}
+          cte_logger.error {"#{t_id}: #{t_from}=>#{t_to} Amount: #{t_amount} (INVALID)"}
           File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
         end
       }
@@ -96,6 +96,11 @@ namespace :bitshares do
     f = File.open("test.txt", 'a')
     f << t << "\n"
     f.close
+  end
+
+  desc "Test Email"
+  task test_email: :environment do
+    NotificationMailer.deposit_email("dipen.chauhan@protonmail.com", "dc366", 0)
   end
 
   # Contacts the Withdraw One Stack service and requests Cloud Coins
