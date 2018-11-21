@@ -16,7 +16,7 @@
         <%= "Cloudcoin".pluralize(@total_authentic_coins_value) %> were uploaded to your Bitshares account - <b><%= @bitshares_account %></b>. <br> All recent transactions can be viewed on the <a href="http://bts.ai/u/cloudcoin">Bitshares Explorer</a>.
       </p>
       <p>
-        Go back to <%= link_to "Upload More Coins", deposit_index_path %>
+        <%= link_to "← Go Back to Upload More Coins", deposit_index_path %>
       </p>
 
       <p class="py-2">
