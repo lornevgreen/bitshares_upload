@@ -12,12 +12,12 @@ namespace :bitshares do
     # Check if the last transaction file exists
     if (File.exist?(Rails.root.join('storage', 'last_withdraw.txt')))
       last_withdraw_transaction = File.read(Rails.root.join('storage', 'last_withdraw.txt'))
-      ct_logger.info {"Found last_withdraw.txt. Last Withdraw Transaction: #{last_withdraw_transaction}."}
+      # ct_logger.info {"Found last_withdraw.txt. Last Withdraw Transaction: #{last_withdraw_transaction}."}
     else
       ct_logger.info {"last_withdraw.txt not found."}
     end
 
-    ct_logger.info {"Calling Python Script"}
+    # ct_logger.info {"Calling Python Script"}
     
     transactions_json = ""
     time_to_run = Benchmark.measure {
@@ -31,7 +31,7 @@ namespace :bitshares do
         ct_logger.fatal {stderr_str}
       end
     }
-    ct_logger.info {"Time taken to run Python script: #{time_to_run.real}"}
+    # ct_logger.info {"Time taken to run Python script: #{time_to_run.real}"}
 
     if transactions_json != ""
       # Iterate through the json in reverse because
@@ -87,6 +87,7 @@ namespace :bitshares do
     end
     
     ct_logger.close
+    cte_logger.close
   end
 
   desc "Test task"
