@@ -12,18 +12,15 @@ namespace :bitshares do
     # Check if the last transaction file exists
     if (File.exist?(Rails.root.join('storage', 'last_withdraw.txt')))
       last_withdraw_transaction = File.read(Rails.root.join('storage', 'last_withdraw.txt'))
-      # ct_logger.info {"Found last_withdraw.txt. Last Withdraw Transaction: #{last_withdraw_transaction}."}
     else
       ct_logger.info {"last_withdraw.txt not found."}
     end
 
-    # ct_logger.info {"Calling Python Script"}
     
     transactions_json = ""
     time_to_run = Benchmark.measure {
       stdout_str, stderr_str, status = Open3.capture3('python3', "../python-bitshares/check_transactions.py", last_withdraw_transaction)
       if status.success?
-        # ct_logger.debug {stdout_str}
         # Parse JSON
         transactions_json = JSON.parse(stdout_str)
       else
@@ -45,7 +42,6 @@ namespace :bitshares do
         t_amount = tj["amount"]
         t_currency = tj["currency"]
         t_memo = tj["memo"]
-        # puts "#{t_id}: #{t_from}=>#{t_to} #{t_amount} #{t_currency} #{t_memo}"
         ct_logger.info {"Processing transaction #{t_id}: #{t_from}=>#{t_to} #{t_amount} #{t_currency} #{t_memo}"}
         
         # Checking Amount
@@ -60,26 +56,26 @@ namespace :bitshares do
               t_memo = "dipen.chauhan@protonmail.com"
             end
             # Download Stack File
-            stack_file_path = download_stack_file(t_amount_new)
+            # stack_file_path = download_stack_file(t_amount_new)
             ct_logger.info {"Downloaded file to #{stack_file_path.to_s}"}
             # Email Stack File
-            NotificationMailer.download_email(t_from, t_memo, stack_file_path.to_s, t_amount_new).deliver!
+            # NotificationMailer.download_email(t_from, t_memo, stack_file_path.to_s, t_amount_new).deliver!
             ct_logger.info {"Emailed: #{t_memo} Amount: #{t_amount_new}"}
             # TODO: Write to last_withdraw.txt
-            File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
+            # File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
             # Delete the stack file
-            File.delete(stack_file_path)
+            # File.delete(stack_file_path)
           else
             ct_logger.error {"Currency: #{t_currency} (INVALID)"}
             ct_logger.error {"Skipping transaction"}
             cte_logger.error {"#{t_id}: #{t_from}=>#{t_to} Amount: #{t_amount_new} Currency: #{t_currency} (INVALID)"}
-            File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
+            # File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
           end
         else
           ct_logger.error {"Amount: #{t_amount} (INVALID)"}
           ct_logger.error {"Skipping transaction"}
           cte_logger.error {"#{t_id}: #{t_from}=>#{t_to} Amount: #{t_amount} (INVALID)"}
-          File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
+          # File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
         end
       }
     else
@@ -100,7 +96,7 @@ namespace :bitshares do
 
   desc "Test Email"
   task test_email: :environment do
-    NotificationMailer.deposit_email("dipen.chauhan@protonmail.com", "dc366", 0)
+    NotificationMailer.deposit_email("get.dipen@gmail.com", "dc366", 10)
   end
 
   # Contacts the Withdraw One Stack service and requests Cloud Coins
