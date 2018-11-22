@@ -56,26 +56,29 @@ namespace :bitshares do
               t_memo = "dipen.chauhan@protonmail.com"
             end
             # Download Stack File
-            # stack_file_path = download_stack_file(t_amount_new)
+            stack_file_path = download_stack_file(t_amount_new)
             ct_logger.info {"Downloaded file to #{stack_file_path.to_s}"}
+            
+            # Write to last_withdraw.txt
+            File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
+
             # Email Stack File
-            # NotificationMailer.download_email(t_from, t_memo, stack_file_path.to_s, t_amount_new).deliver!
+            NotificationMailer.download_email(t_from, t_memo, stack_file_path.to_s, t_amount_new).deliver_now
             ct_logger.info {"Emailed: #{t_memo} Amount: #{t_amount_new}"}
-            # TODO: Write to last_withdraw.txt
-            # File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
+            
             # Delete the stack file
             # File.delete(stack_file_path)
           else
             ct_logger.error {"Currency: #{t_currency} (INVALID)"}
             ct_logger.error {"Skipping transaction"}
             cte_logger.error {"#{t_id}: #{t_from}=>#{t_to} Amount: #{t_amount_new} Currency: #{t_currency} (INVALID)"}
-            # File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
+            File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
           end
         else
           ct_logger.error {"Amount: #{t_amount} (INVALID)"}
           ct_logger.error {"Skipping transaction"}
           cte_logger.error {"#{t_id}: #{t_from}=>#{t_to} Amount: #{t_amount} (INVALID)"}
-          # File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
+          File.write(Rails.root.join('storage', 'last_withdraw.txt'), t_id.split(".").last)
         end
       }
     else
@@ -96,7 +99,7 @@ namespace :bitshares do
 
   desc "Test Email"
   task test_email: :environment do
-    NotificationMailer.deposit_email("get.dipen@gmail.com", "dc366", 10)
+    NotificationMailer.deposit_email("dipen.chauhan@protonmail.com", "dc366", 10).deliver_now
   end
 
   # Contacts the Withdraw One Stack service and requests Cloud Coins
