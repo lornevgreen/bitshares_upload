@@ -3,7 +3,7 @@
 </p>
 
 <p>
-	Attached are <%= pluralize(@withdraw_amount, "CloudCoin") %> that you have ordered sent to you by transfering Bitshares CLOUDCOIN tokens to the CloudCoin account. 
+	Attached are <%= number_with_delimiter(@withdraw_amount) %> <%= "CloudCoin".pluralize(@withdraw_amount) %> that you have ordered sent to you by transfering Bitshares CLOUDCOIN tokens to the CloudCoin account. 
 </p>
 
 <p>
