@@ -46,10 +46,7 @@ class DepositController < ApplicationController
     # redirect_to called in send_to_depository
     if receipt_id.blank?
       u_logger.fatal { "Receipt ID is blank" }
-      return
-    else
-      # Remove the file from local disk
-      FileUtils.remove_file(uploaded_io_full_path, force: true)
+      return      
     end
 
     u_logger.info { "Full receipt URL: https://bank.cloudcoin.global/service/get_receipt?rn=" + receipt_id + "&account=***"}
@@ -75,8 +72,10 @@ class DepositController < ApplicationController
     if deposit_amount > 0
       if did_send
         NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
-        flash[:notice] = "Your coins will be transferred to bitshares. An email has been sent to #{@email} for your records."
+        # Remove the file from local disk
+        FileUtils.remove_file(uploaded_io_full_path, force: true)
         u_logger.info {"Transfer to Bitshares: SUCCESS"}
+        flash[:notice] = "Your coins will be transferred to bitshares. An email has been sent to #{@email} for your records."
       else
         # logger.warn {@email + " tried to upload " + deposit_amount.to_s + " CloudCoin(s) to bitshares account " + @bitshares_account}
         u_logger.info {"Transfer to Bitshares: FAIL"}
