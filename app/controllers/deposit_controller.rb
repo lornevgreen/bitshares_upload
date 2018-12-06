@@ -25,9 +25,14 @@ class DepositController < ApplicationController
   # - Sends an email
   # - If everything is successful redirects to completed
   def upload
+    # Log uploads
+    u_logger = Logger.new('log/upload.log', 10, 1024000)
+    u_logger.info {"===NEW UPLOAD==="}
+    u_logger.info { "Email: " + @email + " Bitshares Account: " + @bitshares_account }
     # Validations of params should have been done before this action started   
     # Save uploaded file on disk to /storage/upload 
     uploaded_io_full_path = save_stack_file(@uploaded_io)
+    u_logger.info {"Stack file location: " + uploaded_io_full_path }
     
     # Get the file content
     uploaded_io_content = File.read(uploaded_io_full_path)
@@ -35,28 +40,31 @@ class DepositController < ApplicationController
     # Send file to online depository via deposit one stack
     # and get the receipt id
     receipt_id = send_to_depository(uploaded_io_content)
-
-    # Remove the file from local disk
-    FileUtils.remove_file(uploaded_io_full_path, force: true)
+    u_logger.info { "Receipt ID: " + receipt_id }
 
     # Do not proceed if receipt id is blank.
     # redirect_to called in send_to_depository
     if receipt_id.blank?
-      logger.warn {"Receipt ID is blank"}
+      u_logger.fatal { "Receipt ID is blank" }
       return
+    else
+      # Remove the file from local disk
+      FileUtils.remove_file(uploaded_io_full_path, force: true)
     end
 
+    u_logger.info { "Full receipt URL: https://bank.cloudcoin.global/service/get_receipt?rn=" + receipt_id + "&account=***"}
     # Get full receipt from get receipt service
     full_receipt = get_receipt_json(receipt_id)
     # Do not proceed if full_receipt is blank.
     # redirect_to called in send_to_depository
-    if receipt_id.blank?
-      logger.warn {"Receipt ID is blank"}
+    if full_receipt.blank?
+      u_logger.fatal { "Full Receipt is blank" }
       return
     end
 
     # Calculate value of uploaded cloud coins
     deposit_amount = get_authentic_coins_value(full_receipt)
+    u_logger.info { "Deposit amount: " +  deposit_amount }
 
     # Call the Issue bitshares service with the account name and amount
     if deposit_amount > 0
@@ -68,14 +76,17 @@ class DepositController < ApplicationController
       if did_send
         NotificationMailer.deposit_email(@email, @bitshares_account, deposit_amount).deliver_later
         flash[:notice] = "Your coins will be transferred to bitshares. An email has been sent to #{@email} for your records."
+        u_logger.info {"Transfer to Bitshares: SUCCESS"}
       else
-        logger.warn {@email + " tried to upload " + deposit_amount.to_s + " CloudCoin(s) to bitshares account " + @bitshares_account}
+        # logger.warn {@email + " tried to upload " + deposit_amount.to_s + " CloudCoin(s) to bitshares account " + @bitshares_account}
+        u_logger.info {"Transfer to Bitshares: FAIL"}
         redirect_to deposit_index_url, alert: "Transfer failed! Your CloudCoins were lost"
         return
       end
     else
-      logger.warn "nothing to transfer"
-      logger.warn {@email + " has 0 CloudCoins to upload to their bitshares account, " + @bitshares_account + "."}
+      # logger.warn "nothing to transfer"
+      # logger.warn {@email + " has 0 CloudCoins to upload to their bitshares account, " + @bitshares_account + "."}
+      u_logger.warn { "Nothing to transfer" }
       flash[:alert] = "Nothing to transfer"
     end
 
@@ -229,12 +240,15 @@ class DepositController < ApplicationController
       # TODO: check if status is NIL
       
       if (status.blank?)
-        redirect_to deposit_index_url, alert: "Status from Deposit One Stack is blank"
+        error_msg = "Status from Deposit One Stack is blank"
+        # u_logger.fatal { error_msg }
+        redirect_to deposit_index_url, alert: error_msg
         return
       elsif (status == "error")
         # if the status is "error", redirect to deposit
         error_msg = response_json["message"]
         error_msg = "The uploaded file was not a valid stack file or there was an unknown error."
+        # u_logger.fatal { error_msg }
         redirect_to deposit_index_url, alert: error_msg
         return
       else
@@ -244,13 +258,17 @@ class DepositController < ApplicationController
         # flash[:notice] = "Your authentic coins will be uploaded to Bitshares shortly. We will send you an email notification to " + user_email
         # redirect_to controller: "deposit", action: "completed", receipt: receipt_id, email: user_email
         if receipt_id.blank?
-          redirect_to deposit_index_url, alert: "Receipt ID is blank"
+          error_msg = "Receipt ID is blank"
+          # u_logger.fatal { error_msg }
+          redirect_to deposit_index_url, alert: error_msg
         end
         return receipt_id
       end
     else
       # if uploaded file is NOT a cloudcoin stack file
-      redirect_to deposit_index_url, alert: "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+      error_msg = "Uploaded file is not a valid stack file or there was an unknown error. Please try again."
+      # u_logger.fatal { error_msg }
+      redirect_to deposit_index_url, alert: error_msg
       return
     end
   end
