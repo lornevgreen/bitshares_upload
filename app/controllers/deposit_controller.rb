@@ -32,7 +32,7 @@ class DepositController < ApplicationController
     # Validations of params should have been done before this action started   
     # Save uploaded file on disk to /storage/upload 
     uploaded_io_full_path = save_stack_file(@uploaded_io)
-    u_logger.info {"Stack file location: " + uploaded_io_full_path }
+    u_logger.info {"Stack file location: " + uploaded_io_full_path.to_s }
     
     # Get the file content
     uploaded_io_content = File.read(uploaded_io_full_path)
