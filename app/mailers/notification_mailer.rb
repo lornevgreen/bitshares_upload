@@ -7,7 +7,8 @@ class NotificationMailer < ApplicationMailer
   #
   
   # default from: 'info@cloudcoin.global'
-  default from: 'get.dipen@gmail.com'
+  # default from: 'get.dipen@gmail.com'
+  default from: "Dipen Chauhan <get.dipen@gmail.com>"
   
   # Sends stack file to user
   # @param  email             stack file will be sent to this email   
