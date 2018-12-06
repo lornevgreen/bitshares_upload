@@ -6,7 +6,7 @@ namespace :bitshares do
   task check_transactions: :environment do
     ct_logger = Logger.new('log/check_transactions.log', 10, 1024000)
     cte_logger = Logger.new('log/check_transactions_error.log', 10, 1024000)
-    ct_logger.info {"===STARTED check_transactions==="}
+    # ct_logger.info {"===STARTED check_transactions==="}
 
     last_withdraw_transaction = ""
     # Check if the last transaction file exists
