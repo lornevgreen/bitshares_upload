@@ -67,9 +67,11 @@
       </table>
 
       <p class="font-italic">
-        Receipt ID: <%= link_to @receipt_id, { controller: "deposit", action: "completed", bitshares_account: @bitshares_account, email: @email, receipt_id: @receipt_id } %>    
+        Receipt ID: <%= link_to @receipt_id, { controller: "deposit", action: "completed", bitshares_account: @bitshares_account, email: @email, receipt_id: @receipt_id } %>
+        <br>
+        Please save the above Receipt ID link to be able to come back to this page later.     
       </p>
-      <p class="font-italic">Created: <%= @checked_at %></p>
+      <p>Created: <%= @checked_at %></p>
     </div>
   </section>
 </main>
