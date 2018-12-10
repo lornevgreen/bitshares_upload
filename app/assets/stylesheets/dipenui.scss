@@ -269,6 +269,10 @@ h6 {
 
 .field {
   margin: 0 auto 1.33em;
+
+  label span.label-alert {
+    color: $red;
+  }
 }
 .efield {
   border: 1px solid red;
