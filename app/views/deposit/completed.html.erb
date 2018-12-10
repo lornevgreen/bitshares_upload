@@ -9,6 +9,15 @@
         <h5 class="title">Transfer Cloudcoins to your Bitshares Wallet</h5>
       </div>
       <hr>
+      <% flash.each do |name, msg| %>
+        <div class="alert <%= bootstrap_class_for(name) %> alert-dismissible fade show" role="alert">
+          <%= msg %>
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+      <% end %>
+      <div class="p-1"></div>
       <div class="big-total">
         <%= number_with_delimiter(@total_authentic_coins_value) %>
       </div>
