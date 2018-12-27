@@ -32,6 +32,12 @@ class DepositController < ApplicationController
     # Save uploaded file on disk to /storage/upload 
     uploaded_io_full_path = save_stack_file(@uploaded_io)
     @u_logger.info {"Stack file location: " + uploaded_io_full_path.to_s }
+    @u_logger.info {"File size: " + File.stat(uploaded_io_full_path).size.to_s }
+    if (File.stat(uploaded_io_full_path).size > 210944)
+      @u_logger.error { "File too big (> 210944 Bytes)" }
+      redirect_to deposit_index_url, alert: "File is too big. You should upload a file smaller than 206 KB"
+      return
+    end
     
     # Get the file content
     uploaded_io_content = File.read(uploaded_io_full_path)
