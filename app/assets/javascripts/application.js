@@ -62,8 +62,9 @@ function opl() {
       var fileName = "";
 
       if (this.files && this.files.length == 1) {
-        if (this.files[0].size > 1200000) {
-          alert("File size is too big. Please select a file that is smaller than 1 MB");
+        // Do not allow files larger than 206 KB
+        if (this.files[0].size > 210944) {
+          alert("File size is too big. Please select a file that is smaller than 206 KB");
           this.value = "";
         }
       }
