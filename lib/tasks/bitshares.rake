@@ -89,12 +89,17 @@ namespace :bitshares do
     cte_logger.close
   end
 
-  desc "Test task"
-  task test: :environment do
-    t = Time.now
-    f = File.open("test.txt", 'a')
-    f << t << "\n"
-    f.close
+  desc "Manual Send"
+  task manual_send: :environment do
+    t_amount_new = 25000
+    t_from = "green-l"
+    t_memo = "lgreen@protonmail.com"
+
+    # Download Stack File
+    stack_file_path = download_stack_file(t_amount_new)
+    # Email Stack File
+    NotificationMailer.download_email(t_from, t_memo, stack_file_path.to_s, t_amount_new).deliver_now
+    # NotificationMailer.download_email(t_from, t_memo, stack_file_path.to_s, t_amount_new).deliver_now
   end
 
   desc "Test Email"
