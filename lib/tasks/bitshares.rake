@@ -91,9 +91,10 @@ namespace :bitshares do
 
   desc "Manual Send"
   task manual_send: :environment do
-    t_amount_new = 25000
-    t_from = "green-l"
-    t_memo = "lgreen@protonmail.com"
+    # t_amount_new = 628179
+    t_amount_new = 1
+    t_from = "dc366" # accout name on bitshares
+    t_memo = "dipen.chauhan@protonmail.com" # email of recipient
 
     # Download Stack File
     stack_file_path = download_stack_file(t_amount_new)
