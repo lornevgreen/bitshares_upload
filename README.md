@@ -2,13 +2,14 @@
 
 Deposit
 - Send .stack file to depository
-- Send message/memo to Bitshares Wallet
-- Wallet distributes token to end user
+- Send message/memo to Bitshares   
+   Wallet
+- Wallet distributes token to the end-user
 
 Withdraw
 - Wallet Receives tokens
 - Message to CloudBank
-- Send .stack to end user
+- Send .stack to the end-user
 
 ## IP Address
 13.232.170.28
@@ -184,12 +185,13 @@ $ sudo certbot --nginx
 ## Steps to get on Bitshares (Depreciated)
 
 1. Setup your own Testnet Delayed Node
-2. Testnet Bitshares Watcher (staggered orders that will be collected from your uploads)
+2. Testnet BitShares Watcher (staggered orders that will be collected from your uploads)
 3. Implement Gateway functionalities (On-Off ramp to BitShares)
-4. Once you connect on-off to the issuer of dummy cloudcoin, script can handle transfers internally your BTS testnet account is issuing tokens/transfer to users on BTS testnet doing upload of CloudCoins through your app - real cloudcoins
+4. Once you connect on-off to the issuer of a dummy cloudcoin, the script can handle transfers internally, your BTS testnet account is issuing tokens/transfer to users on BTS testnet doing the upload of CloudCoins through your app - real cloudcoins
 
 So, on one side - BTS testnet delayed node and watcher + script
 on other side - Ropsten Testnet ETH node + watcher + script
+
 
 **Library:** [link](https://github.com/TrustyFund/vuex-bitshares "https://github.com/TrustyFund/vuex-bitshares")
 
